@@ -1,13 +1,23 @@
 package com.axxes.garagebandprototype;
 
+import com.axxes.garagebandprototype.presenter.Presenter;
 import javafx.geometry.Insets;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class GaragebandUI {
+
+    @Autowired
+    private Presenter presenter;
+
+    private BorderPane borderPane;
 
     private StackPane rootPane;
 
@@ -32,7 +42,11 @@ public class GaragebandUI {
     private Pane kickSelection;
     private Pane cymbalSelection;
 
+    private MenuBar menuBar;
+
     public GaragebandUI() {
+        this.borderPane = new BorderPane();
+
         // Root pane
         this.rootPane = new StackPane();
 
@@ -45,6 +59,22 @@ public class GaragebandUI {
         this.vWrapper.setStyle("-fx-background-color: #e53d2f;");
         this.vWrapper.setPadding(new Insets(10, 10, 10, 10));
         this.vWrapper.setSpacing(10);
+
+        //menubar
+        this.menuBar = new MenuBar();
+        this.menuBar.setLayoutY(0);
+        Menu menu = new Menu("File");
+        MenuItem menuItemSave = new MenuItem("Save");
+        menuItemSave.setOnAction(e -> presenter.menuButtonSave());
+        MenuItem menuItemLoad = new MenuItem("Import");
+        menuItemLoad.setOnAction(e -> presenter.menuButtonLoad());
+        MenuItem menuItemExit = new MenuItem("Exit");
+        menuItemExit.setOnAction(e -> presenter.exit());
+        menu.getItems().add(menuItemSave);
+        menu.getItems().add(menuItemLoad);
+        menu.getItems().add(menuItemExit);
+        menuBar.getMenus().add(menu);
+
 
         // Beat grid
         this.beatGrid = new Pane();
@@ -156,7 +186,9 @@ public class GaragebandUI {
         this.vSelection.getChildren().addAll(playPauseBpm, snareSelection, hihatSelection, kickSelection, cymbalSelection);
         this.instrumentSelection.getChildren().addAll(vSelection);
         this.hWrapper.getChildren().addAll(beatGrid, instrumentSelection);
-        this.rootPane.getChildren().add(hWrapper);
+        this.rootPane.getChildren().addAll(hWrapper);
+        this.borderPane.setTop(menuBar);
+        this.borderPane.setCenter(rootPane);
     }
 
     public void changeToSmallLayout() {
@@ -193,8 +225,11 @@ public class GaragebandUI {
         this.rootPane.getChildren().add(vWrapper);
     }
 
-    public StackPane getRootPane() {
-        return this.rootPane;
+    public BorderPane getRootPane() {
+        return this.borderPane;
     }
 
+    public void exit() {
+        presenter.exit();
+    }
 }
