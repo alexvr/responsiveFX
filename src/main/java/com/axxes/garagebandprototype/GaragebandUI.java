@@ -2,6 +2,8 @@ package com.axxes.garagebandprototype;
 
 import javafx.geometry.Insets;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,11 +21,12 @@ public class GaragebandUI {
     private Pane instrumentSelection;
     private HBox hSelection;
     private VBox vSelection;
-    private Pane playPause;
-    private HBox hPlayPause;
-    private VBox vPlayPause;
-    private Pane play;
-    private Pane pause;
+
+    private GridPane playPauseBpm;
+    private Rectangle r1;
+    private Rectangle r2;
+    private Rectangle r3;
+
     private Pane snareSelection;
     private Pane hihatSelection;
     private Pane kickSelection;
@@ -57,18 +60,16 @@ public class GaragebandUI {
         this.vSelection.setPadding(new Insets(10, 10, 10, 10));
         this.vSelection.setSpacing(10);
 
-        // Play pause
-        this.playPause = new Pane();
-        this.hPlayPause = new HBox();
-        this.hPlayPause.setStyle("-fx-background-color: #ff5c3c;");
-        // this.hPlayPause.setPadding(new Insets(10, 10, 10, 10));
-        this.hPlayPause.setSpacing(10);
-        this.vPlayPause = new VBox();
-        this.vPlayPause.setStyle("-fx-background-color: #57c5ff;");
-        // this.vPlayPause.setPadding(new Insets(10, 10, 10, 10));
-        this.vPlayPause.setSpacing(10);
-        this.play = new Pane();
-        this.pause = new Pane();
+        // Play pause bpm
+        this.playPauseBpm = new GridPane();
+        this.playPauseBpm.setVgap(10);
+        this.r1 = new Rectangle();
+        this.r1.setFill(Color.BLUE);
+        this.r2 = new Rectangle();
+        this.r2.setFill(Color.ORANGE);
+        this.r3 = new Rectangle();
+        this.r3.setFill(Color.BROWN);
+
 
         // Instruments
         this.snareSelection = new Pane();
@@ -94,9 +95,7 @@ public class GaragebandUI {
         this.instrumentSelection.getChildren().clear();
         this.vSelection.getChildren().clear();
         this.hSelection.getChildren().clear();
-        this.playPause.getChildren().clear();
-        this.hPlayPause.getChildren().clear();
-        this.vPlayPause.getChildren().clear();
+        this.playPauseBpm.getChildren().clear();
     }
 
     private void initialiseBeatGridLarge() {
@@ -108,7 +107,7 @@ public class GaragebandUI {
     private void initialiseInstrumentSelectionLarge() {
         // Substract the padding
         double isWidth = (this.rootPane.getWidth() * 0.25) - 35;
-        double isHeight = this.rootPane.getHeight() - 80;
+        double isHeight = this.rootPane.getHeight() - 90;
 
         this.instrumentSelection.setStyle("-fx-background-color: #73ff42;");
         this.instrumentSelection.setPrefWidth(this.rootPane.getWidth() * 0.25);
@@ -116,13 +115,13 @@ public class GaragebandUI {
 
         System.out.println("Large instrument selection width: " + isWidth + ", height: " + isHeight);
         setInstrumentSelectionDimensions(isWidth, isHeight / 5);
-        setPlayPauseDimensions((isWidth / 2) - 5, isHeight / 5);
+        setPlayPauseBpmDimensions(isWidth, isHeight / 5);
     }
 
     private void setInstrumentSelectionDimensions(double width, double height) {
-        this.playPause.setPrefWidth(width);
-        this.playPause.setMinHeight(height);
-        this.playPause.setStyle("-fx-background-color: #ffa2fc;");
+        this.playPauseBpm.setPrefWidth(width);
+        this.playPauseBpm.setMinHeight(height);
+        this.playPauseBpm.setStyle("-fx-background-color: #ffa2fc;");
 
         this.snareSelection.setPrefWidth(width);
         this.snareSelection.setPrefHeight(height);
@@ -141,20 +140,20 @@ public class GaragebandUI {
         this.cymbalSelection.setStyle("-fx-background-color: #90fff8;");
     }
 
-    private void setPlayPauseDimensions(double width, double height) {
-        this.play.setPrefWidth(width);
-        this.play.setPrefHeight(height);
-        this.play.setStyle("-fx-background-color: #84ff89;");
-
-        this.pause.setPrefWidth(width);
-        this.pause.setPrefHeight(height);
-        this.pause.setStyle("-fx-background-color: #84ff89;");
+    private void setPlayPauseBpmDimensions(double width, double height) {
+        this.r1.setHeight(height / 2);
+        this.r1.setWidth(width / 2);
+        this.r2.setHeight(height / 2);
+        this.r2.setWidth(width / 2);
+        this.r3.setHeight(height / 2);
+        this.r3.setWidth(width);
+        this.playPauseBpm.add(r1, 0, 0);
+        this.playPauseBpm.add(r2,1, 0);
+        this.playPauseBpm.add(r3, 0,1, 2, 1);
     }
 
     private void buildLargeLayout() {
-        this.hPlayPause.getChildren().addAll(play, pause);
-        this.playPause.getChildren().add(hPlayPause);
-        this.vSelection.getChildren().addAll(playPause, snareSelection, hihatSelection, kickSelection, cymbalSelection);
+        this.vSelection.getChildren().addAll(playPauseBpm, snareSelection, hihatSelection, kickSelection, cymbalSelection);
         this.instrumentSelection.getChildren().addAll(vSelection);
         this.hWrapper.getChildren().addAll(beatGrid, instrumentSelection);
         this.rootPane.getChildren().add(hWrapper);
@@ -175,7 +174,7 @@ public class GaragebandUI {
 
     private void initialiseInstrumentSelectionSmall() {
         // Substract the padding
-        double isWidth = this.rootPane.getWidth() - 80;
+        double isWidth = this.rootPane.getWidth() - 82.5;
         double isHeight = (this.rootPane.getHeight() * 0.25) - 45;
         this.instrumentSelection.setStyle("-fx-background-color: #73ff42;");
         this.instrumentSelection.setPrefWidth(this.rootPane.getWidth());
@@ -184,13 +183,11 @@ public class GaragebandUI {
         System.out.println("Small instrument selection width: " + isWidth + ", height: " + isHeight);
 
         setInstrumentSelectionDimensions(isWidth / 5, isHeight);
-        setPlayPauseDimensions((isWidth / 5), (isHeight / 2));
+        setPlayPauseBpmDimensions(isWidth / 5, isHeight);
     }
 
     private void buildSmallLayout() {
-        this.vPlayPause.getChildren().addAll(play, pause);
-        this.playPause.getChildren().add(vPlayPause);
-        this.hSelection.getChildren().addAll(snareSelection, hihatSelection, kickSelection, cymbalSelection, playPause);
+        this.hSelection.getChildren().addAll(snareSelection, hihatSelection, kickSelection, cymbalSelection, playPauseBpm);
         this.instrumentSelection.getChildren().add(hSelection);
         this.vWrapper.getChildren().addAll(beatGrid, instrumentSelection);
         this.rootPane.getChildren().add(vWrapper);
