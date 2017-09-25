@@ -1,15 +1,26 @@
 package com.axxes.garagebandprototype;
 
+import com.axxes.garagebandprototype.model.loop.Drumloop;
+import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.presenter.Presenter;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.Collection;
 
 @Component
 public class GaragebandUI {
@@ -38,13 +49,27 @@ public class GaragebandUI {
     private Rectangle r2;
     private Rectangle r3;
 
-    private Pane snareSelection;
-    private Pane hihatSelection;
-    private Pane kickSelection;
-    private Pane cymbalSelection;
+    private StackPane snareSelection;
+    private StackPane hihatSelection;
+    private StackPane kickSelection;
+    private StackPane cymbalSelection;
+
+    @Autowired
+    private Drumloop drumloop;
+    private int beats;
+    private int beatsPerMeasure;
 
     public GaragebandUI() {
+
+    }
+
+    @PostConstruct
+    public void init() {
+        this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
+        this.beatsPerMeasure = drumloop.getBeatsPerMeasure();
+
         this.borderPane = new BorderPane();
+        this.borderPane.getStylesheets().add("/css/garbage.css");
 
         // Root pane
         this.rootPane = new StackPane();
@@ -77,7 +102,6 @@ public class GaragebandUI {
 
         // Beat grid
         this.beatGridContainer = new Pane();
-
         this.beatGrid = new GridPane();
 
         // Instrument selection
@@ -101,12 +125,42 @@ public class GaragebandUI {
         this.r3 = new Rectangle();
         this.r3.setFill(Color.BROWN);
 
-
         // Instruments
-        this.snareSelection = new Pane();
-        this.hihatSelection = new Pane();
-        this.kickSelection = new Pane();
-        this.cymbalSelection = new Pane();
+        this.snareSelection = new StackPane();
+        this.snareSelection.getStyleClass().add("anchor");
+        this.snareSelection.setAlignment(Pos.CENTER);
+        ImageView snareView = new ImageView();
+        snareView.setImage(new Image("/images/snare.png"));
+        snareView.setFitWidth(120);
+        snareView.setFitHeight(120);
+        snareSelection.getChildren().addAll(snareView);
+
+        this.hihatSelection = new StackPane();
+        this.hihatSelection.getStyleClass().add("anchor");
+        this.hihatSelection.setAlignment(Pos.CENTER);
+        ImageView hihatView = new ImageView();
+        hihatView.setImage(new Image("/images/hihat.png"));
+        hihatView.setFitHeight(120);
+        hihatView.setFitWidth(120);
+        hihatSelection.getChildren().addAll(hihatView);
+
+        this.kickSelection = new StackPane();
+        this.kickSelection.getStyleClass().add("anchor");
+        this.kickSelection.setAlignment(Pos.CENTER);
+        ImageView kickView = new ImageView();
+        kickView.setImage(new Image("/images/kick.png"));
+        kickView.setFitWidth(120);
+        kickView.setFitHeight(120);
+        kickSelection.getChildren().addAll(kickView);
+
+        this.cymbalSelection = new StackPane();
+        this.cymbalSelection.getStyleClass().add("anchor");
+        this.cymbalSelection.setAlignment(Pos.CENTER);
+        ImageView cymbalView = new ImageView();
+        cymbalView.setImage(new Image("./images/cymbal.png"));
+        cymbalView.setFitHeight(120);
+        cymbalView.setFitWidth(120);
+        cymbalSelection.getChildren().add(cymbalView);
 
         this.borderPane.setTop(menuBar);
         this.borderPane.setCenter(rootPane);
@@ -126,6 +180,7 @@ public class GaragebandUI {
         this.hWrapper.getChildren().clear();
         this.vWrapper.getChildren().clear();
         this.beatGridContainer.getChildren().clear();
+        this.beatGrid.getChildren().clear();
         this.instrumentSelection.getChildren().clear();
         this.vSelection.getChildren().clear();
         this.hSelection.getChildren().clear();
@@ -136,12 +191,17 @@ public class GaragebandUI {
         this.beatGridContainer.setStyle("-fx-background-color: #fff328;");
         this.beatGridContainer.setPrefWidth(this.rootPane.getWidth() * 0.75);
         this.beatGridContainer.setPrefHeight(this.rootPane.getHeight());
+
+        this.beatGrid.setPrefWidth((this.rootPane.getWidth() * 0.75) - 20);
+        this.beatGrid.setPrefHeight(this.rootPane.getHeight() - 20);
+
+        createBaseGrid();
     }
 
     private void initialiseInstrumentSelectionLarge() {
         // Substract the padding
         double isWidth = (this.rootPane.getWidth() * 0.25) - 35;
-        double isHeight = this.rootPane.getHeight() - 90;
+        double isHeight = this.rootPane.getHeight() - 95;
 
         this.instrumentSelection.setStyle("-fx-background-color: #73ff42;");
         this.instrumentSelection.setPrefWidth(this.rootPane.getWidth() * 0.25);
@@ -187,6 +247,7 @@ public class GaragebandUI {
     }
 
     private void buildLargeLayout() {
+        this.beatGridContainer.getChildren().addAll(beatGrid);
         this.vSelection.getChildren().addAll(playPauseBpm, snareSelection, hihatSelection, kickSelection, cymbalSelection);
         this.instrumentSelection.getChildren().addAll(vSelection);
         this.hWrapper.getChildren().addAll(beatGridContainer, instrumentSelection);
@@ -204,6 +265,12 @@ public class GaragebandUI {
         this.beatGridContainer.setStyle("-fx-background-color: #9b37ff;");
         this.beatGridContainer.setPrefWidth(this.rootPane.getWidth());
         this.beatGridContainer.setPrefHeight(this.rootPane.getHeight() * 0.75);
+
+        this.beatGrid.setStyle("-fx-background-color: #ffca28;");
+        this.beatGrid.setPrefWidth(this.rootPane.getWidth() - 20);
+        this.beatGrid.setPrefHeight((this.rootPane.getHeight() * 0.75) - 20);
+
+        createBaseGrid();
     }
 
     private void initialiseInstrumentSelectionSmall() {
@@ -221,10 +288,28 @@ public class GaragebandUI {
     }
 
     private void buildSmallLayout() {
+        this.beatGridContainer.getChildren().addAll(beatGrid);
         this.hSelection.getChildren().addAll(snareSelection, hihatSelection, kickSelection, cymbalSelection, playPauseBpm);
         this.instrumentSelection.getChildren().add(hSelection);
         this.vWrapper.getChildren().addAll(beatGridContainer, instrumentSelection);
         this.rootPane.getChildren().add(vWrapper);
+    }
+
+    private void createBaseGrid() {
+        this.beatGrid.add(createLabel("Beat"), 0, 0);
+        for (int i = 1; i <= this.beats; i++) {
+            int currentBeat = ((i - 1) % this.beatsPerMeasure) + 1;
+            this.beatGrid.add(createLabel(String.valueOf(currentBeat)),i, 0);
+        }
+        this.beatGrid.setBorder(Border.EMPTY);
+    }
+
+    private Label createLabel(String text) {
+        Label label = new Label(text);
+        label.setAlignment(Pos.CENTER);
+        DoubleProperty dp = new SimpleDoubleProperty((this.rootPane.getWidth() - 20) / this.beats);
+        label.prefWidthProperty().bind(dp);
+        return label;
     }
 
     public BorderPane getRootPane() {

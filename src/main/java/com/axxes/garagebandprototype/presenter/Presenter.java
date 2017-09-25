@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,6 +110,14 @@ public class Presenter {
         this.distortionEffect = distortionEffect;
     }
 
+    @PostConstruct
+    public void init() {
+        //this.programmaticSliderChange = false;
+        //this.bpm = new SimpleIntegerProperty();
+        //this.bpm.bindBidirectional(drumloop.getBpm());
+        //Bindings.bindBidirectional(this.bpmTextField.textProperty(), this.bpm, new NumberStringConverter());
+    }
+
     private void createLoop() {
         if (this.loopTimeline != null) {
             this.loopTimeline.stop();
@@ -127,13 +136,8 @@ public class Presenter {
 
     @FXML
     protected void initialize() {
-        this.programmaticSliderChange = false;
-        this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
-        this.beatsPerMeasure = drumloop.getBeatsPerMeasure();
-        this.bpm = new SimpleIntegerProperty();
-        this.bpm.bindBidirectional(drumloop.getBpm());
-        Bindings.bindBidirectional(this.bpmTextField.textProperty(), this.bpm, new NumberStringConverter());
-        createBaseGrid();
+
+        //createBaseGrid();
         createHighlighter();
         createSlider();
         createLoop();
@@ -168,13 +172,13 @@ public class Presenter {
         this.highLighter.setX(85 + (60*this.highlighterPosition));
     }
 
-    private void createBaseGrid() {
-        this.grid.add(createLabel("Beat"), 0, 0);
-        for (int i = 1; i <= this.beats; i++) {
-            int currentBeat = ((i - 1) % this.beatsPerMeasure) + 1;
-            this.grid.add(createLabel(String.valueOf(currentBeat)),i, 0);
+    public void createBaseGrid(GridPane gridPane, int beats, int beatsPerMeasure) {
+        gridPane.add(createLabel("Beat"), 0, 0);
+        for (int i = 1; i <= beats; i++) {
+            int currentBeat = ((i - 1) % beatsPerMeasure) + 1;
+            gridPane.add(createLabel(String.valueOf(currentBeat)),i, 0);
         }
-        this.grid.setBorder(Border.EMPTY);
+        gridPane.setBorder(Border.EMPTY);
     }
 
     private Label createLabel(String text) {

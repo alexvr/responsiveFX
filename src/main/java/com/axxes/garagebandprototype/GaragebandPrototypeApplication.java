@@ -23,7 +23,7 @@ public class GaragebandPrototypeApplication extends Application {
         try {
             GaragebandUI garagebandUI = this.context.getBean(GaragebandUI.class);
 
-            primaryStage.setMinWidth(600);
+            primaryStage.setMinWidth(800);
 
             primaryStage.widthProperty().addListener(e -> {
                 if(primaryStage.getWidth() < 1000) {
