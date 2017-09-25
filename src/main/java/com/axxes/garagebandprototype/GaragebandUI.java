@@ -26,7 +26,8 @@ public class GaragebandUI {
     // Window < 600
     private VBox vWrapper;
 
-    private Pane beatGrid;
+    private Pane beatGridContainer;
+    private GridPane beatGrid;
 
     private Pane instrumentSelection;
     private HBox hSelection;
@@ -41,8 +42,6 @@ public class GaragebandUI {
     private Pane hihatSelection;
     private Pane kickSelection;
     private Pane cymbalSelection;
-
-    private MenuBar menuBar;
 
     public GaragebandUI() {
         this.borderPane = new BorderPane();
@@ -61,8 +60,8 @@ public class GaragebandUI {
         this.vWrapper.setSpacing(10);
 
         //menubar
-        this.menuBar = new MenuBar();
-        this.menuBar.setLayoutY(0);
+        MenuBar menuBar = new MenuBar();
+        menuBar.setLayoutY(0);
         Menu menu = new Menu("File");
         MenuItem menuItemSave = new MenuItem("Save");
         menuItemSave.setOnAction(e -> presenter.menuButtonSave());
@@ -77,7 +76,9 @@ public class GaragebandUI {
 
 
         // Beat grid
-        this.beatGrid = new Pane();
+        this.beatGridContainer = new Pane();
+
+        this.beatGrid = new GridPane();
 
         // Instrument selection
         this.instrumentSelection = new Pane();
@@ -107,6 +108,9 @@ public class GaragebandUI {
         this.kickSelection = new Pane();
         this.cymbalSelection = new Pane();
 
+        this.borderPane.setTop(menuBar);
+        this.borderPane.setCenter(rootPane);
+
         changeToLargeLayout();
     }
 
@@ -121,7 +125,7 @@ public class GaragebandUI {
         this.rootPane.getChildren().clear();
         this.hWrapper.getChildren().clear();
         this.vWrapper.getChildren().clear();
-        this.beatGrid.getChildren().clear();
+        this.beatGridContainer.getChildren().clear();
         this.instrumentSelection.getChildren().clear();
         this.vSelection.getChildren().clear();
         this.hSelection.getChildren().clear();
@@ -129,9 +133,9 @@ public class GaragebandUI {
     }
 
     private void initialiseBeatGridLarge() {
-        this.beatGrid.setStyle("-fx-background-color: #fff328;");
-        this.beatGrid.setPrefWidth(this.rootPane.getWidth() * 0.75);
-        this.beatGrid.setPrefHeight(this.rootPane.getHeight());
+        this.beatGridContainer.setStyle("-fx-background-color: #fff328;");
+        this.beatGridContainer.setPrefWidth(this.rootPane.getWidth() * 0.75);
+        this.beatGridContainer.setPrefHeight(this.rootPane.getHeight());
     }
 
     private void initialiseInstrumentSelectionLarge() {
@@ -185,10 +189,8 @@ public class GaragebandUI {
     private void buildLargeLayout() {
         this.vSelection.getChildren().addAll(playPauseBpm, snareSelection, hihatSelection, kickSelection, cymbalSelection);
         this.instrumentSelection.getChildren().addAll(vSelection);
-        this.hWrapper.getChildren().addAll(beatGrid, instrumentSelection);
+        this.hWrapper.getChildren().addAll(beatGridContainer, instrumentSelection);
         this.rootPane.getChildren().addAll(hWrapper);
-        this.borderPane.setTop(menuBar);
-        this.borderPane.setCenter(rootPane);
     }
 
     public void changeToSmallLayout() {
@@ -199,9 +201,9 @@ public class GaragebandUI {
     }
 
     private void initialiseBeatGridSmall() {
-        this.beatGrid.setStyle("-fx-background-color: #9b37ff;");
-        this.beatGrid.setPrefWidth(this.rootPane.getWidth());
-        this.beatGrid.setPrefHeight(this.rootPane.getHeight() * 0.75);
+        this.beatGridContainer.setStyle("-fx-background-color: #9b37ff;");
+        this.beatGridContainer.setPrefWidth(this.rootPane.getWidth());
+        this.beatGridContainer.setPrefHeight(this.rootPane.getHeight() * 0.75);
     }
 
     private void initialiseInstrumentSelectionSmall() {
@@ -221,7 +223,7 @@ public class GaragebandUI {
     private void buildSmallLayout() {
         this.hSelection.getChildren().addAll(snareSelection, hihatSelection, kickSelection, cymbalSelection, playPauseBpm);
         this.instrumentSelection.getChildren().add(hSelection);
-        this.vWrapper.getChildren().addAll(beatGrid, instrumentSelection);
+        this.vWrapper.getChildren().addAll(beatGridContainer, instrumentSelection);
         this.rootPane.getChildren().add(vWrapper);
     }
 
