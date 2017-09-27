@@ -34,7 +34,7 @@ public class GaragebandPrototypeApplication extends Application {
                 }
             });
 
-            primaryStage.setScene(new Scene(garagebandUI.getRootPane(), 1400, 800));
+            primaryStage.setScene(new Scene(garagebandUI.getContentPane(), 1400, 800));
             primaryStage.setOnHidden(event -> garagebandUI.exit());
             primaryStage.show();
         } catch(Exception e) {

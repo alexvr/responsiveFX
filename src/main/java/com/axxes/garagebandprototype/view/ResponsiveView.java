@@ -4,7 +4,7 @@ import javafx.scene.layout.Pane;
 
 public interface ResponsiveView {
 
-    Pane getSmallView();
-    Pane getLargeView();
+    Pane getSmallView(double width, double height);
+    Pane getLargeView(double width, double height);
 
 }
