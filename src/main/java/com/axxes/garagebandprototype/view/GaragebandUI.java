@@ -1,4 +1,4 @@
-package com.axxes.garagebandprototype;
+package com.axxes.garagebandprototype.view;
 
 import com.axxes.garagebandprototype.model.loop.Drumloop;
 import com.axxes.garagebandprototype.model.measures.Measure;
@@ -54,6 +54,8 @@ public class GaragebandUI {
     private StackPane kickSelection;
     private StackPane cymbalSelection;
 
+    private InstrumentSelectionView instrumentSelectionView;
+
     @Autowired
     private Drumloop drumloop;
     private int beats;
@@ -105,6 +107,8 @@ public class GaragebandUI {
         this.beatGrid = new GridPane();
 
         // Instrument selection
+        this.instrumentSelectionView = new InstrumentSelectionView();
+
         this.instrumentSelection = new Pane();
         this.hSelection = new HBox();
         this.hSelection.setStyle("-fx-background-color: #fffb1d;");

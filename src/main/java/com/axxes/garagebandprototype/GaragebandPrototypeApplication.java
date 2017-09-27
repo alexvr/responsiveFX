@@ -1,5 +1,6 @@
 package com.axxes.garagebandprototype;
 
+import com.axxes.garagebandprototype.view.GaragebandUI;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
