@@ -1,6 +1,7 @@
 package com.axxes.garagebandprototype.view;
 
 import com.axxes.garagebandprototype.presenter.Presenter;
+import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
@@ -88,8 +89,8 @@ public class GaragebandUI {
     }
 
     private void buildLargeLayout() {
-        this.instrumentSelection = this.instrumentSelectionView.getLargeView(this.contentPane.getWidth(), this.contentPane.getHeight());
-        this.beatGrid = this.beatGridView.getLargeView(this.contentPane.getWidth(), this.contentPane.getHeight());
+        this.instrumentSelection = this.instrumentSelectionView.getLargeView(contentPane.getWidth(), contentPane.getHeight());
+        this.beatGrid = this.beatGridView.getLargeView(contentPane.widthProperty(), contentPane.heightProperty());
 
         this.hWrapper.getChildren().addAll(beatGrid, instrumentSelection);
         this.contentPane.getChildren().addAll(hWrapper);
@@ -101,8 +102,8 @@ public class GaragebandUI {
     }
 
     private void buildSmallLayout() {
-        this.instrumentSelection = this.instrumentSelectionView.getSmallView(this.contentPane.getWidth(), this.contentPane.getHeight());
-        this.beatGrid = this.beatGridView.getSmallView(this.contentPane.getWidth(), this.contentPane.getHeight());
+        this.instrumentSelection = this.instrumentSelectionView.getSmallView(contentPane.getWidth(), contentPane.getHeight());
+        this.beatGrid = this.beatGridView.getSmallView(contentPane.widthProperty(), contentPane.heightProperty());
 
         this.vWrapper.getChildren().addAll(beatGrid, instrumentSelection);
         this.contentPane.getChildren().addAll(vWrapper);

@@ -10,7 +10,7 @@ import javafx.scene.shape.Rectangle;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InstrumentSelection implements ResponsiveView {
+public class InstrumentSelection {
 
     private Pane instrumentSelection;
     private HBox hSelection;
@@ -86,7 +86,6 @@ public class InstrumentSelection implements ResponsiveView {
         this.cymbalSelection.getChildren().add(cymbalView);
     }
 
-    @Override
     public Pane getSmallView(double width, double height) {
         this.clearLayout();
         this.initialiseSmallLayout(width, height);
@@ -94,7 +93,6 @@ public class InstrumentSelection implements ResponsiveView {
         return this.instrumentSelection;
     }
 
-    @Override
     public Pane getLargeView(double width, double height) {
         this.clearLayout();
         this.initialiseLargeLayout(width, height);

@@ -8,14 +8,15 @@ import com.axxes.garagebandprototype.model.measures.Beat;
 import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.util.MusicXmlParser;
 import com.axxes.garagebandprototype.util.MusicXmlWriter;
+import com.axxes.garagebandprototype.view.BeatGrid;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.*;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -46,8 +47,12 @@ import java.util.Set;
 @Controller
 public class Presenter {
 
-    @FXML
-    private GridPane grid;
+    // @FXML
+    // private GridPane grid;
+
+    @Autowired
+    private BeatGrid beatGrid;
+
     private int gridRow = 1;
 
     @FXML
@@ -112,10 +117,7 @@ public class Presenter {
 
     @PostConstruct
     public void init() {
-        //this.programmaticSliderChange = false;
-        //this.bpm = new SimpleIntegerProperty();
-        //this.bpm.bindBidirectional(drumloop.getBpm());
-        //Bindings.bindBidirectional(this.bpmTextField.textProperty(), this.bpm, new NumberStringConverter());
+
     }
 
     private void createLoop() {
@@ -172,20 +174,12 @@ public class Presenter {
         this.highLighter.setX(85 + (60*this.highlighterPosition));
     }
 
-    public void createBaseGrid(GridPane gridPane, int beats, int beatsPerMeasure) {
-        gridPane.add(createLabel("Beat"), 0, 0);
-        for (int i = 1; i <= beats; i++) {
-            int currentBeat = ((i - 1) % beatsPerMeasure) + 1;
-            gridPane.add(createLabel(String.valueOf(currentBeat)),i, 0);
-        }
-        gridPane.setBorder(Border.EMPTY);
-    }
-
     private Label createLabel(String text) {
         Label label = new Label(text);
         label.setAlignment(Pos.CENTER);
-        label.setPrefWidth(60);
-        label.setPrefHeight(30);
+        ReadOnlyDoubleProperty width = this.beatGrid.getRootWidth();
+        DoubleBinding db = width.subtract(20).divide(this.beats);
+        label.prefWidthProperty().bind(db);
         return label;
     }
 
@@ -229,19 +223,21 @@ public class Presenter {
     }
 
     private void addInstrumentLine(Instrument instrument) {
-        this.highLighter.setHeight(this.highLighter.getHeight()+50);
-        disableAddInstrumentButton(instrument);
-        this.grid.addRow(this.gridRow, createLabel(instrument.getClass().getSimpleName()));
+        // this.highLighter.setHeight(this.highLighter.getHeight()+50);
+        // disableAddInstrumentButton(instrument);
+        int rowCount = this.beatGrid.getRowCount();
+        this.beatGrid.add(createLabel(instrument.getClass().getSimpleName()), 0, rowCount);
 
         for (int i = 0; i < this.beats; i++) {
             int measureCount = i / 4;
             int beatCount = i % 4;
             Button button = createToggleInstrumentButton(instrument, measureCount, beatCount);
-            this.grid.add(button, i + 1, this.gridRow);
+            this.beatGrid.add(button, i + 1, rowCount);
 
-            createEffectsContextMenu(instrument, button, measureCount, beatCount);
+            // createEffectsContextMenu(instrument, button, measureCount, beatCount);
         }
-        this.gridRow++;
+
+        this.beatGrid.incrementRowCount();
     }
 
     private Button createToggleInstrumentButton(Instrument instrument, int measureCount, int beatCount) {
@@ -372,13 +368,7 @@ public class Presenter {
     }
 
     private void deleteInstrumentLines() {
-        List<Node> deleteNodes = new ArrayList<>();
-        for (Node node : this.grid.getChildren()) {
-            if (GridPane.getRowIndex(node) > 0) {
-                deleteNodes.add(node);
-            }
-        }
-        this.grid.getChildren().removeAll(deleteNodes);
+        this.beatGrid.resetInstruments();
     }
 
     private void createInstrumentLines() {
