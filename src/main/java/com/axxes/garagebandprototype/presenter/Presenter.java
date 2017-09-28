@@ -5,6 +5,7 @@ import com.axxes.garagebandprototype.Audio.effects.*;
 import com.axxes.garagebandprototype.model.instrument.*;
 import com.axxes.garagebandprototype.model.loop.Drumloop;
 import com.axxes.garagebandprototype.model.measures.Beat;
+import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.util.MusicXmlParser;
 import com.axxes.garagebandprototype.util.MusicXmlWriter;
 import com.axxes.garagebandprototype.view.BeatGrid;
@@ -33,6 +34,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
+import java.util.Collection;
 import java.util.Set;
 
 @Controller
@@ -88,6 +90,7 @@ public class Presenter {
         this.ringModulatorEffect = ringModulatorEffect;
         this.reverbEffect = reverbEffect;
         this.distortionEffect = distortionEffect;
+        this.highlighterPosition = 0;
     }
 
     @PostConstruct
@@ -95,6 +98,7 @@ public class Presenter {
         this.bpm = new SimpleIntegerProperty();
         this.bpm.bindBidirectional(drumloop.getBpm());
         Bindings.bindBidirectional(instrumentSelection.getBpmProperty(), this.bpm, new NumberStringConverter());
+        this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
     }
 
     private void createLoop() {
@@ -107,7 +111,7 @@ public class Presenter {
                 Duration.millis(timeBetweenBeats),
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
-                    //stepHighlighterAndSlider();
+                    stepHighlighterAndSlider();
                     this.drumloop.step();
                 }));
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
@@ -161,14 +165,19 @@ public class Presenter {
     }
 
     private void stepHighlighterAndSlider(){
-        if (this.highlighterPosition == this.beats){
+        /*if (this.highlighterPosition == this.beats){
             this.highlighterPosition = 0;
         }
         this.highLighter.setX(85 + (60*this.highlighterPosition));
         programmaticSliderChange = true;
         this.slider.setValue(this.highlighterPosition);
         programmaticSliderChange = false;
+        this.highlighterPosition++;*/
+        this.beatGrid.stepHighlight(highlighterPosition);
         this.highlighterPosition++;
+        if (this.highlighterPosition == this.beats) {
+            this.highlighterPosition = 0;
+        }
     }
 
     private void disableAddInstrumentButton(Instrument instrument) {
