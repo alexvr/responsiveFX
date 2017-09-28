@@ -1,10 +1,10 @@
 package com.axxes.garagebandprototype.presenter;
 
 import com.axxes.garagebandprototype.Audio.AudioDevice;
-import com.axxes.garagebandprototype.Audio.effects.*;
+import com.axxes.garagebandprototype.Audio.effects.Effect;
+import com.axxes.garagebandprototype.Audio.effects.NoEffect;
 import com.axxes.garagebandprototype.model.instrument.*;
 import com.axxes.garagebandprototype.model.loop.Drumloop;
-import com.axxes.garagebandprototype.model.measures.Beat;
 import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.util.MusicXmlParser;
 import com.axxes.garagebandprototype.util.MusicXmlWriter;
@@ -15,13 +15,14 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -210,21 +211,15 @@ public class Presenter {
     }
 
 
-    public void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
+    public void instrumentToggle(Instrument instrument, int measureCount, int beatCount, ToggleButton button) {
         if (this.drumloop.hasInstrument(instrument, measureCount, beatCount)) {
+            button.setStyle("");
             this.drumloop.removeInstrument(instrument, measureCount, beatCount);
         } else {
             this.drumloop.addInstrument(instrument, measureCount, beatCount, noEffect);
+            button.setStyle("-fx-background-color: darkgray");
         }
     }
-
-    public void bindBeatToButton(Instrument instrument, ToggleButton button, int measureCount, int beatCount) {
-        Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
-        BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
-        hasInstrument.addListener(observable -> button.styleProperty().set(hasInstrument.getValue() ? "-fx-background-color: darkgray" : ""));
-//        button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
-    }
-
 
     public void menuButtonSave() {
         final Stage dialog = new Stage();

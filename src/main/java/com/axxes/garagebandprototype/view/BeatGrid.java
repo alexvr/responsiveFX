@@ -9,10 +9,10 @@ import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -169,8 +169,7 @@ public class BeatGrid implements ResponsiveView {
         instrumentButton.prefWidthProperty().bind(buttonWidth);
         instrumentButton.prefHeightProperty().bind(buttonWidth);
         instrumentButton.getStyleClass().add(instrument.getClass().getSimpleName().toLowerCase());
-        instrumentButton.setOnAction(event -> presenter.instrumentToggle(instrument, measureCount, beatCount));
-        presenter.bindBeatToButton(instrument, instrumentButton, measureCount, beatCount);
+        instrumentButton.setOnAction(event -> presenter.instrumentToggle(instrument, measureCount, beatCount, instrumentButton));
 
         return instrumentButton;
     }
