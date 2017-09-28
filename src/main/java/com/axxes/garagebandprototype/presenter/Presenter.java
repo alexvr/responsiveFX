@@ -9,6 +9,7 @@ import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.util.MusicXmlParser;
 import com.axxes.garagebandprototype.util.MusicXmlWriter;
 import com.axxes.garagebandprototype.view.BeatGrid;
+import com.axxes.garagebandprototype.view.InstrumentSelection;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -52,6 +53,8 @@ public class Presenter {
 
     @Autowired
     private BeatGrid beatGrid;
+    @Autowired
+    private InstrumentSelection instrumentSelection;
 
     private int gridRow = 1;
 
@@ -117,7 +120,9 @@ public class Presenter {
 
     @PostConstruct
     public void init() {
-
+        this.bpm = new SimpleIntegerProperty();
+        this.bpm.bindBidirectional(drumloop.getBpm());
+        Bindings.bindBidirectional(instrumentSelection.getBpmProperty(), this.bpm, new NumberStringConverter());
     }
 
     private void createLoop() {
@@ -130,7 +135,7 @@ public class Presenter {
                 Duration.millis(timeBetweenBeats),
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
-                    stepHighlighterAndSlider();
+                    //stepHighlighterAndSlider();
                     this.drumloop.step();
                 }));
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
@@ -222,38 +227,14 @@ public class Presenter {
         this.imageCymbal.setDisable(false);
     }
 
-    private void addInstrumentLine(Instrument instrument) {
+    public void addInstrumentLine(Instrument instrument) {
         // this.highLighter.setHeight(this.highLighter.getHeight()+50);
         // disableAddInstrumentButton(instrument);
         int rowCount = this.beatGrid.getRowCount();
-        this.beatGrid.add(createLabel(instrument.getClass().getSimpleName()), 0, rowCount);
-
-        for (int i = 0; i < this.beats; i++) {
-            int measureCount = i / 4;
-            int beatCount = i % 4;
-            Button button = createToggleInstrumentButton(instrument, measureCount, beatCount);
-            this.beatGrid.add(button, i + 1, rowCount);
-
-            // createEffectsContextMenu(instrument, button, measureCount, beatCount);
-        }
+        this.beatGrid.addLabel(instrument.getClass().getSimpleName(), 0, rowCount);
+        this.beatGrid.addInstrumentButtons(instrument, rowCount);
 
         this.beatGrid.incrementRowCount();
-    }
-
-    private Button createToggleInstrumentButton(Instrument instrument, int measureCount, int beatCount) {
-        Button button = new Button();
-        Image image = new Image(instrument.getImage());
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitWidth(40);
-        imageView.setFitHeight(40);
-        button.setGraphic(imageView);
-
-        button.setOnAction(event -> instrumentToggle(instrument, measureCount, beatCount));
-
-        bindBeatToButton(instrument, button, measureCount, beatCount);
-
-        return button;
     }
 
     private void createEffectsContextMenu(Instrument instrument, Button button, int measureCount, int beatCount) {
@@ -313,7 +294,7 @@ public class Presenter {
     }
 
 
-    private void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
+    public void instrumentToggle(Instrument instrument, int measureCount, int beatCount) {
         if (this.drumloop.hasInstrument(instrument, measureCount, beatCount)) {
             this.drumloop.removeInstrument(instrument, measureCount, beatCount);
         } else {
@@ -321,7 +302,7 @@ public class Presenter {
         }
     }
 
-    private void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
+    public void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
         Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
         BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
         hasInstrument.addListener(observable -> {
@@ -388,19 +369,19 @@ public class Presenter {
        Platform.exit();
     }
 
-    public void imageKickPressed() {
+    public void kickPressed() {
         addInstrumentLine(kick);
     }
 
-    public void imageSnarePressed() {
+    public void snarePressed() {
         addInstrumentLine(snare);
     }
 
-    public void imageHihatPressed() {
+    public void hihatPressed() {
         addInstrumentLine(hiHat);
     }
 
-    public void imageCymbalPressed() {
+    public void cymbalPressed() {
         addInstrumentLine(cymbal);
     }
 

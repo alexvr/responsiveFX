@@ -1,15 +1,22 @@
 package com.axxes.garagebandprototype.view;
 
+import com.axxes.garagebandprototype.presenter.Presenter;
+import com.sun.deploy.panel.TextFieldProperty;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,14 +25,17 @@ public class InstrumentSelection implements ResponsiveView {
     private ReadOnlyDoubleProperty rootWidth;
     private ReadOnlyDoubleProperty rootHeight;
 
+    @Autowired
+    private Presenter presenter;
+
     private Pane instrumentSelection;
     private HBox hSelection;
     private VBox vSelection;
 
     private GridPane playPauseBpm;
-    private Rectangle r1;
-    private Rectangle r2;
-    private Rectangle r3;
+    private Button play;
+    private Button pause;
+    private TextField bpm;
 
     private StackPane snareSelection;
     private StackPane hihatSelection;
@@ -50,12 +60,11 @@ public class InstrumentSelection implements ResponsiveView {
         // Play pause bpm pane
         this.playPauseBpm = new GridPane();
         this.playPauseBpm.setVgap(10);
-        this.r1 = new Rectangle();
-        this.r1.setFill(Color.BLUE);
-        this.r2 = new Rectangle();
-        this.r2.setFill(Color.ORANGE);
-        this.r3 = new Rectangle();
-        this.r3.setFill(Color.BROWN);
+        this.play = new Button("play");
+        this.play.setOnAction(event -> presenter.playLoop());
+        this.pause = new Button("pause");
+        this.pause.setOnAction(event -> presenter.stopLoop());
+        this.bpm = new TextField();
 
         // Instruments
         this.snareSelection = new StackPane();
@@ -66,6 +75,7 @@ public class InstrumentSelection implements ResponsiveView {
         snareView.setFitWidth(120);
         snareView.setFitHeight(120);
         this.snareSelection.getChildren().addAll(snareView);
+        snareSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.snarePressed());
 
         this.hihatSelection = new StackPane();
         this.hihatSelection.getStyleClass().add("anchor");
@@ -75,6 +85,7 @@ public class InstrumentSelection implements ResponsiveView {
         hihatView.setFitHeight(120);
         hihatView.setFitWidth(120);
         this.hihatSelection.getChildren().addAll(hihatView);
+        hihatSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.hihatPressed());
 
         this.kickSelection = new StackPane();
         this.kickSelection.getStyleClass().add("anchor");
@@ -84,6 +95,7 @@ public class InstrumentSelection implements ResponsiveView {
         kickView.setFitWidth(120);
         kickView.setFitHeight(120);
         this.kickSelection.getChildren().addAll(kickView);
+        kickSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.kickPressed());
 
         this.cymbalSelection = new StackPane();
         this.cymbalSelection.getStyleClass().add("anchor");
@@ -93,6 +105,7 @@ public class InstrumentSelection implements ResponsiveView {
         cymbalView.setFitHeight(120);
         cymbalView.setFitWidth(120);
         this.cymbalSelection.getChildren().add(cymbalView);
+        cymbalSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.cymbalPressed());
     }
 
     public Pane getSmallView(ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) {
@@ -123,7 +136,7 @@ public class InstrumentSelection implements ResponsiveView {
         // Substract the padding
         if (this.rootWidth.getValue() > 0) {
             DoubleBinding calculatedWidth = rootWidth.subtract(82.5).divide(5);
-            DoubleBinding calculatedHeight = rootHeight.multiply(0.25).subtract(60);
+            DoubleBinding calculatedHeight = rootHeight.multiply(0.25).subtract(50);
             System.out.println("Small instrument selection width: " + calculatedWidth.get() + ", height: " + calculatedHeight.get());
 
             setContainerSize(rootWidth.multiply(1), rootHeight.multiply(0.25));
@@ -162,15 +175,15 @@ public class InstrumentSelection implements ResponsiveView {
     private void setPlayPauseBpmDimensions(DoubleBinding width, DoubleBinding height) {
         DoubleBinding halfWidth = width.divide(2);
         DoubleBinding halfHeight = height.divide(2);
-        this.r1.heightProperty().bind(halfHeight);
-        this.r1.widthProperty().bind(halfWidth);
-        this.r2.heightProperty().bind(halfHeight);
-        this.r2.widthProperty().bind(halfWidth);
-        this.r3.heightProperty().bind(halfHeight);
-        this.r3.widthProperty().bind(width);
-        this.playPauseBpm.add(r1, 0, 0);
-        this.playPauseBpm.add(r2,1, 0);
-        this.playPauseBpm.add(r3, 0,1, 2, 1);
+        this.play.prefHeightProperty().bind(halfHeight);
+        this.play.prefWidthProperty().bind(halfWidth);
+        this.pause.prefHeightProperty().bind(halfHeight);
+        this.pause.prefWidthProperty().bind(halfWidth);
+        this.bpm.prefHeightProperty().bind(halfHeight);
+        this.bpm.prefWidthProperty().bind(width);
+        this.playPauseBpm.add(play, 0, 0);
+        this.playPauseBpm.add(pause,1, 0);
+        this.playPauseBpm.add(bpm, 0,1, 2, 1);
     }
 
     private void buildSmallLayout() {
@@ -182,7 +195,7 @@ public class InstrumentSelection implements ResponsiveView {
         if (this.rootWidth.getValue() > 0) {
             // Substract the padding
             DoubleBinding calculatedWidth = rootWidth.multiply(0.25).subtract(35);
-            DoubleBinding calculatedHeight = rootHeight.subtract(95).divide(5);
+            DoubleBinding calculatedHeight = rootHeight.subtract(85).divide(5);
             System.out.println("Large instrument selection width: " + calculatedWidth.get() + ", height: " + calculatedHeight.get());
 
             setContainerSize(rootWidth.multiply(0.25), rootHeight.multiply(1));
@@ -194,6 +207,10 @@ public class InstrumentSelection implements ResponsiveView {
     private void buildLargeLayout() {
         this.vSelection.getChildren().addAll(playPauseBpm, snareSelection, hihatSelection, kickSelection, cymbalSelection);
         this.instrumentSelection.getChildren().add(vSelection);
+    }
+
+    public StringProperty getBpmProperty() {
+        return this.bpm.textProperty();
     }
 
 }
