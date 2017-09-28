@@ -1,5 +1,6 @@
 package com.axxes.garagebandprototype.view;
 
+import com.axxes.garagebandprototype.Audio.effects.*;
 import com.axxes.garagebandprototype.model.instrument.Instrument;
 import com.axxes.garagebandprototype.model.loop.Drumloop;
 import com.axxes.garagebandprototype.model.measures.Measure;
@@ -9,11 +10,12 @@ import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,6 +39,19 @@ public class BeatGrid implements ResponsiveView {
     private Drumloop drumloop;
     private int beats;
     private int beatsPerMeasure;
+
+    @Autowired
+    private Echo echoEffect;
+    @Autowired
+    private NoEffect noEffect;
+    @Autowired
+    private Reverb reverbEffect;
+    @Autowired
+    private RingModulator ringModulatorEffect;
+    @Autowired
+    private Flanger flangerEffect;
+    @Autowired
+    private Distortion distortionEffect;
 
     public BeatGrid() {
         this.beatGridContainer = new Pane();
@@ -137,13 +152,13 @@ public class BeatGrid implements ResponsiveView {
         for (int i = 0; i < this.beats; i++) {
             int measureCount = i / 4;
             int beatCount = i % 4;
-            Button button = createToggleInstrumentButton(instrument, measureCount, beatCount);
+            ToggleButton button = createToggleInstrumentButton(instrument, measureCount, beatCount);
             if (hasBeatInstrument(measureCount, beatCount, instrument)){
                 button.setStyle("-fx-background-color: darkgray");
             }
             this.beatGrid.add(button, i + 1, rowCount);
 
-            // createEffectsContextMenu(instrument, button, measureCount, beatCount);
+            createEffectsContextMenu(instrument, button, measureCount, beatCount);
         }
     }
 
@@ -151,8 +166,8 @@ public class BeatGrid implements ResponsiveView {
         return this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount).hasInstrument(instrument);
     }
 
-    private Button createToggleInstrumentButton(Instrument instrument, int measureCount, int beatCount) {
-        Button instrumentButton = new Button();
+    private ToggleButton createToggleInstrumentButton(Instrument instrument, int measureCount, int beatCount) {
+        ToggleButton instrumentButton = new ToggleButton();
         DoubleBinding buttonWidth = this.rootWidth.subtract(20).divide(this.beats);
         // TODO: Fix width is same than height.
         instrumentButton.prefWidthProperty().bind(buttonWidth);
@@ -162,6 +177,69 @@ public class BeatGrid implements ResponsiveView {
         presenter.bindBeatToButton(instrument, instrumentButton, measureCount, beatCount);
 
         return instrumentButton;
+    }
+
+    private void createEffectsContextMenu(Instrument instrument, ToggleButton button, int measureCount, int beatCount) {
+        ContextMenu effectsMenu = new ContextMenu();
+
+        MenuItem noEffectItem = createMenuItem("No effect", Color.DARKGRAY);
+        noEffectItem.setOnAction(event -> {
+            presenter.instrumentAddEffect(instrument, measureCount, beatCount, noEffect);
+            if (button.isSelected()){
+                button.setStyle("-fx-background-color: darkgray");
+            }
+        });
+
+        MenuItem echoEffectItem = createMenuItem("Echo", Color.AQUA);
+        echoEffectItem.setOnAction(event -> {
+            presenter.instrumentAddEffect(instrument, measureCount, beatCount, echoEffect);
+            if (button.isSelected()){
+                button.setStyle("-fx-background-color: aqua");
+            }
+        });
+
+        MenuItem reverbEffectItem = createMenuItem("Reverb", Color.CHOCOLATE);
+        reverbEffectItem.setOnAction(event -> {
+            presenter.instrumentAddEffect(instrument, measureCount, beatCount, reverbEffect);
+            if (button.isSelected()) {
+                button.setStyle("-fx-background-color: chocolate");
+            }
+        });
+
+        MenuItem ringModulatorEffectItem = createMenuItem("Ring Modulator", Color.DARKGRAY);
+        ringModulatorEffectItem.setOnAction(event -> {
+            presenter.instrumentAddEffect(instrument, measureCount, beatCount, ringModulatorEffect);
+            if (button.isSelected()){
+                button.setStyle("-fx-background-color: darkgray");
+            }
+        });
+
+        MenuItem flangerEffectItem = createMenuItem("Flanger", Color.DARKGRAY);
+        flangerEffectItem.setOnAction(event -> {
+            presenter.instrumentAddEffect(instrument, measureCount, beatCount, flangerEffect);
+            if (button.isSelected()){
+                button.setStyle("-fx-background-color: darkgray");
+            }
+        });
+
+        MenuItem distortionEffectItem = createMenuItem("Distortion", Color.DARKGRAY);
+        distortionEffectItem.setOnAction(event -> {
+            presenter.instrumentAddEffect(instrument, measureCount, beatCount, distortionEffect);
+            if (button.isSelected()){
+                button.setStyle("-fx-background-color: darkgray");
+            }
+        });
+
+        effectsMenu.getItems().addAll(noEffectItem, echoEffectItem, reverbEffectItem, ringModulatorEffectItem, flangerEffectItem, distortionEffectItem);
+        button.setContextMenu(effectsMenu);
+    }
+
+    private MenuItem createMenuItem(String effect, Color color) {
+        MenuItem menuItem = new MenuItem(effect);
+        Rectangle rectangle = new Rectangle(10, 10);
+        rectangle.setFill(color);
+        menuItem.setGraphic(rectangle);
+        return menuItem;
     }
 
     public void incrementRowCount() {
