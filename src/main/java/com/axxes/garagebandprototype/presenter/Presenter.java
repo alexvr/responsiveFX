@@ -56,21 +56,6 @@ public class Presenter {
     @Autowired
     private InstrumentSelection instrumentSelection;
 
-    private int gridRow = 1;
-
-    @FXML
-    AnchorPane imageKick;
-    @FXML
-    AnchorPane imageSnare;
-    @FXML
-    AnchorPane imageHihat;
-    @FXML
-    AnchorPane imageCymbal;
-    @FXML
-    TextField bpmTextField;
-    @FXML
-    Pane root;
-
     private Rectangle highLighter;
     private int highlighterPosition;
 
@@ -141,15 +126,6 @@ public class Presenter {
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
     }
 
-    @FXML
-    protected void initialize() {
-
-        //createBaseGrid();
-        createHighlighter();
-        createSlider();
-        createLoop();
-    }
-
 
     private void createSlider(){
         this.slider = new Slider(0, this.beats - 1, this.highlighterPosition);
@@ -167,7 +143,7 @@ public class Presenter {
             }
         });
 
-        root.getChildren().add(slider);
+        //root.getChildren().add(slider);
     }
 
     private void changeHighlighterPosition(int position){
@@ -194,7 +170,7 @@ public class Presenter {
         this.highLighter.setMouseTransparent(true);
         this.highLighter.setFill(Color.RED);
         this.highLighter.setOpacity(0.5);
-        this.root.getChildren().add(highLighter);
+        //this.root.getChildren().add(highLighter);
     }
 
     private void stepHighlighterAndSlider(){
@@ -210,26 +186,26 @@ public class Presenter {
 
     private void disableAddInstrumentButton(Instrument instrument) {
         if (instrument.getClass().equals(HiHat.class)) {
-            this.imageHihat.setDisable(true);
+            this.instrumentSelection.setDisabledHiHat(true);
         } else if (instrument.getClass().equals(Snare.class)) {
-            this.imageSnare.setDisable(true);
+            this.instrumentSelection.setDisabledSnare(true);
         } else if (instrument.getClass().equals(Kick.class)) {
-            this.imageKick.setDisable(true);
+            this.instrumentSelection.setDisabledKick(true);
         } else if (instrument.getClass().equals(Cymbal.class)) {
-            this.imageCymbal.setDisable(true);
+            this.instrumentSelection.setDisabledCymbal(true);
         }
     }
 
     private void enableAddInstrumentButton() {
-        this.imageHihat.setDisable(false);
-        this.imageSnare.setDisable(false);
-        this.imageKick.setDisable(false);
-        this.imageCymbal.setDisable(false);
+        this.instrumentSelection.setDisabledCymbal(false);
+        this.instrumentSelection.setDisabledKick(false);
+        this.instrumentSelection.setDisabledSnare(false);
+        this.instrumentSelection.setDisabledHiHat(false);
     }
 
     public void addInstrumentLine(Instrument instrument) {
         // this.highLighter.setHeight(this.highLighter.getHeight()+50);
-        // disableAddInstrumentButton(instrument);
+        disableAddInstrumentButton(instrument);
         int rowCount = this.beatGrid.getRowCount();
         this.beatGrid.addLabel(instrument.getClass().getSimpleName(), 0, rowCount);
         this.beatGrid.addInstrumentButtons(instrument, rowCount);

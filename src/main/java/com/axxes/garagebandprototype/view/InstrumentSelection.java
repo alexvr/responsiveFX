@@ -213,4 +213,20 @@ public class InstrumentSelection implements ResponsiveView {
         return this.bpm.textProperty();
     }
 
+    public void setDisabledKick(boolean isDisabled) {
+        this.kickSelection.setDisable(isDisabled);
+    }
+
+    public void setDisabledHiHat(boolean isDisabled) {
+        this.hihatSelection.setDisable(isDisabled);
+    }
+
+    public void setDisabledCymbal(boolean isDisabled) {
+        this.cymbalSelection.setDisable(isDisabled);
+    }
+
+    public void setDisabledSnare(boolean isDisabled) {
+        this.snareSelection.setDisable(isDisabled);
+    }
+
 }
