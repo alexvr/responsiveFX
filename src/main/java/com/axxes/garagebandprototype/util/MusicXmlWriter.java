@@ -1,5 +1,6 @@
 package com.axxes.garagebandprototype.util;
 
+import com.axxes.garagebandprototype.Audio.effects.Effect;
 import com.axxes.garagebandprototype.model.instrument.Instrument;
 import com.axxes.garagebandprototype.model.loop.Drumloop;
 import com.axxes.garagebandprototype.model.measures.Beat;
@@ -60,6 +61,11 @@ public class MusicXmlWriter {
                         Element instrumentName = doc.createElement("name");
                         instrumentName.appendChild(doc.createTextNode(instruments.get(k).getClass().getSimpleName()));
                         instrument.appendChild(instrumentName);
+
+                        Element instrumentEffect = doc.createElement("effect");
+                        Effect effect = beats.get(j).getEffectForInstrument(instruments.get(k));
+                        instrumentEffect.appendChild(doc.createTextNode(effect.getClass().getSimpleName()));
+                        instrument.appendChild(instrumentEffect);
                     }
                 }
             }

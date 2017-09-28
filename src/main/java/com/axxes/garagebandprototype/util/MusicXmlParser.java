@@ -1,5 +1,6 @@
 package com.axxes.garagebandprototype.util;
 
+import com.axxes.garagebandprototype.Audio.effects.*;
 import com.axxes.garagebandprototype.model.instrument.*;
 import com.axxes.garagebandprototype.model.loop.Drumloop;
 import com.axxes.garagebandprototype.model.measures.Measure;
@@ -28,6 +29,18 @@ public class MusicXmlParser {
     private Snare snare;
     @Autowired
     private Drumloop drumloop;
+    @Autowired
+    private Echo echoEffect;
+    @Autowired
+    private NoEffect noEffect;
+    @Autowired
+    private Reverb reverbEffect;
+    @Autowired
+    private RingModulator ringModulatorEffect;
+    @Autowired
+    private Flanger flangerEffect;
+    @Autowired
+    private Distortion distortionEffect;
 
     public void parserDrumloopFromXml(File file) {
         // Empty the current drumloop.
@@ -62,11 +75,24 @@ public class MusicXmlParser {
                         System.out.println("\tBeat no: " + bElement.getAttribute("id"));
 
                         // Instruments
-                        NodeList instruments = bElement.getElementsByTagName("name");
+                        NodeList instruments = bElement.getElementsByTagName("instrument");
+
                         for (int k = 0; k < instruments.getLength(); k++) {
-                            System.out.println("\t\tInstrument name: " + instruments.item(k).getTextContent());
-                            Instrument instrument = getInstrument(instruments.item(k).getTextContent());
-                            drumloop.addInstrument(instrument, i, j);
+                            Node iNode = instruments.item(k);
+                            if (iNode.getNodeType() == Node.ELEMENT_NODE) {
+                                Element iElement = (Element) bNode;
+
+                                String instrumentName = iElement.getElementsByTagName("name").item(0).getTextContent();
+
+                                System.out.println("\t\tInstrument name: " + instrumentName);
+                                Instrument instrument = getInstrument(instrumentName);
+
+                                String effectName = iElement.getElementsByTagName("effect").item(0).getTextContent();
+
+                                Effect effect = getEffect(effectName);
+                                drumloop.addInstrument(instrument, i, j, effect);
+
+                            }
                         }
                     }
                 }
@@ -100,6 +126,35 @@ public class MusicXmlParser {
         }
 
         return instrument;
+    }
+
+    private Effect getEffect(String effectName) {
+        Effect effect;
+
+        switch (effectName) {
+            case "Distortion":
+                effect = distortionEffect;
+                break;
+            case "Echo":
+                effect = echoEffect;
+                break;
+            case "Flanger":
+                effect = flangerEffect;
+                break;
+            case "NoEffect":
+                effect = noEffect;
+                break;
+            case "Reverb":
+                effect = reverbEffect;
+                break;
+            case "RingModulator":
+                effect = ringModulatorEffect;
+                break;
+            default:
+                effect = noEffect;
+        }
+
+        return effect;
     }
 
 }

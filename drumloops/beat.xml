@@ -4,6 +4,7 @@
     <beat id="0">
       <instrument id="0">
         <name>Kick</name>
+        <effect>0</effect>
       </instrument>
     </beat>
     <beat id="1">

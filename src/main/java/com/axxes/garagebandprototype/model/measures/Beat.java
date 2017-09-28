@@ -50,4 +50,8 @@ public class Beat {
     public boolean hasInstrument(Instrument instrument){
         return instruments.contains(instrument);
     }
+
+    public Effect getEffectForInstrument(Instrument instrument){
+        return this.instrumentEffectsMap.get(instrument);
+    }
 }

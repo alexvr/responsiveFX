@@ -1,5 +1,6 @@
 package com.axxes.garagebandprototype.model.loop;
 
+import com.axxes.garagebandprototype.Audio.effects.Effect;
 import com.axxes.garagebandprototype.Audio.effects.NoEffect;
 import com.axxes.garagebandprototype.model.instrument.Instrument;
 import com.axxes.garagebandprototype.model.measures.Beat;
@@ -58,8 +59,8 @@ public class Drumloop implements Loop {
         this.measures = measures;
     }
 
-    public void addInstrument(Instrument instrument, int measureCount, int beatCount) {
-        measures.get(measureCount).addInstrument(instrument, beatCount, noEffect);
+    public void addInstrument(Instrument instrument, int measureCount, int beatCount, Effect effect) {
+        measures.get(measureCount).addInstrument(instrument, beatCount, effect);
     }
 
     public void removeInstrument(Instrument instrument, int measureCount, int beatCount) {

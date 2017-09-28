@@ -154,6 +154,7 @@ public class BeatGrid implements ResponsiveView {
             int beatCount = i % 4;
             ToggleButton button = createToggleInstrumentButton(instrument, measureCount, beatCount);
             if (hasBeatInstrument(measureCount, beatCount, instrument)){
+                button.setSelected(true);
                 button.setStyle("-fx-background-color: darkgray");
             }
             this.beatGrid.add(button, i + 1, rowCount);

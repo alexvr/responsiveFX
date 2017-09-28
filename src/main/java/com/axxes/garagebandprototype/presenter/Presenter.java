@@ -65,8 +65,10 @@ public class Presenter {
     private final HiHat hiHat;
     private final Snare snare;
 
+    private final NoEffect noEffect;
+
     @Autowired
-    public Presenter(Drumloop drumloop, MusicXmlParser parser, MusicXmlWriter writer, AudioDevice audioDevice, Kick kick, Cymbal cymbal, HiHat hiHat, Flanger flangerEffect, Snare snare, Echo echoEffect, NoEffect noEffect, RingModulator ringModulatorEffect, Reverb reverbEffect, Distortion distortionEffect) {
+    public Presenter(Drumloop drumloop, MusicXmlParser parser, MusicXmlWriter writer, AudioDevice audioDevice, Kick kick, Cymbal cymbal, HiHat hiHat, Snare snare, NoEffect noEffect) {
         this.parser = parser;
         this.writer = writer;
         this.audioDevice = audioDevice;
@@ -75,6 +77,7 @@ public class Presenter {
         this.cymbal = cymbal;
         this.hiHat = hiHat;
         this.snare = snare;
+        this.noEffect = noEffect;
     }
 
     @PostConstruct
@@ -200,7 +203,7 @@ public class Presenter {
         if (this.drumloop.hasInstrument(instrument, measureCount, beatCount)) {
             this.drumloop.removeInstrument(instrument, measureCount, beatCount);
         } else {
-            this.drumloop.addInstrument(instrument, measureCount, beatCount);
+            this.drumloop.addInstrument(instrument, measureCount, beatCount, noEffect);
         }
     }
 
