@@ -9,6 +9,7 @@ import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.util.MusicXmlParser;
 import com.axxes.garagebandprototype.util.MusicXmlWriter;
 import com.axxes.garagebandprototype.view.BeatGrid;
+import com.axxes.garagebandprototype.view.Highlighter;
 import com.axxes.garagebandprototype.view.InstrumentSelection;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -57,6 +58,8 @@ public class Presenter {
     private final Snare snare;
 
     private final NoEffect noEffect;
+    @Autowired
+    private Highlighter highlighter;
 
     @Autowired
     public Presenter(Drumloop drumloop, MusicXmlParser parser, MusicXmlWriter writer, AudioDevice audioDevice, Kick kick, Cymbal cymbal, HiHat hiHat, Snare snare, NoEffect noEffect) {
@@ -106,7 +109,13 @@ public class Presenter {
 
     private void resetHighlighter() {
         this.highlighterPosition = 0;
+        this.highlighter.setSliderValue(0);
         this.beatGrid.stepHighlight(0);
+    }
+    
+    public void changeHighlighterPosition(int position){
+        this.highlighterPosition = position;
+        this.beatGrid.stepHighlight(position);
     }
 
     private void disableAddInstrumentButton(Instrument instrument) {
@@ -237,5 +246,9 @@ public class Presenter {
 
     public void stopLoop() {
         this.loopTimeline.stop();
+    }
+
+    public int getHighlighterPosition() {
+        return highlighterPosition;
     }
 }

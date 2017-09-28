@@ -35,6 +35,7 @@ public class BeatGrid implements ResponsiveView {
 
     private Pane beatGridContainer;
     private GridPane beatGrid;
+    @Autowired
     private Highlighter highlighter;
     private int rowCount;
 
@@ -65,7 +66,7 @@ public class BeatGrid implements ResponsiveView {
         this.beatGridContainer = new Pane();
         this.beatGridContainer.setStyle("-fx-background-color: #33c2ff;");
         this.beatGrid = new GridPane();
-        this.highlighter = new Highlighter();
+        this.beatGrid.setLayoutY(30);
     }
 
     @PostConstruct
@@ -98,9 +99,12 @@ public class BeatGrid implements ResponsiveView {
     }
 
     private void initialiseSmallLayout() {
-        this.setBeatGridSize(rootWidth.subtract(20), rootHeight.multiply(0.75));
+        this.setBeatGridSize(rootWidth.subtract(20), rootHeight.multiply(0.75).subtract(30));
         this.highlighter.setWidthProperty(rootWidth.subtract(20).divide(this.beats + 1));
-        this.highlighter.setHeightProperty(rootHeight.multiply(0.75));
+        this.highlighter.setHeightProperty(rootHeight.multiply(0.75).subtract(30));
+        DoubleBinding sliderPosX = this.rootWidth.add(60).divide(this.beats - 1);
+        DoubleBinding sliderWidth = rootWidth.multiply(0.93).subtract(sliderPosX);
+        this.highlighter.setSliderParameters(sliderPosX,beats - 1, presenter.getHighlighterPosition(), sliderWidth);
     }
 
     private void setBeatGridSize(DoubleBinding width, DoubleBinding height) {
@@ -133,13 +137,16 @@ public class BeatGrid implements ResponsiveView {
     }
 
     private void buildLayout() {
-        this.beatGridContainer.getChildren().addAll(beatGrid, highlighter.getHighlighter());
+        this.beatGridContainer.getChildren().addAll(beatGrid, highlighter.getHighlighter(), highlighter.getSlider());
     }
 
     private void initialiseLargeLayout() {
-        this.setBeatGridSize(rootWidth.multiply(0.75).subtract(15), rootHeight.subtract(20));
+        this.setBeatGridSize(rootWidth.multiply(0.75).subtract(15), rootHeight.subtract(53));
         this.highlighter.setWidthProperty(rootWidth.multiply(0.75).subtract(15).divide(this.beats + 1));
-        this.highlighter.setHeightProperty(rootHeight.subtract(20));
+        this.highlighter.setHeightProperty(rootHeight.subtract(53));
+        DoubleBinding sliderPosX = this.rootWidth.subtract(100).divide(this.beats);
+        DoubleBinding sliderWidth = rootWidth.multiply(0.705).subtract(sliderPosX);
+        this.highlighter.setSliderParameters(sliderPosX,beats - 1, presenter.getHighlighterPosition(), sliderWidth);
     }
 
     public void addLabel(String description, int column, int row) {
