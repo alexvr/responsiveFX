@@ -1,21 +1,19 @@
 package com.axxes.garagebandprototype.view;
 
 import com.axxes.garagebandprototype.presenter.Presenter;
-import com.sun.deploy.panel.TextFieldProperty;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.StringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -33,8 +31,7 @@ public class InstrumentSelection implements ResponsiveView {
     private VBox vSelection;
 
     private GridPane playPauseBpm;
-    private Button play;
-    private Button pause;
+    private ToggleButton playPause;
     private TextField bpm;
 
     private StackPane snareSelection;
@@ -60,11 +57,19 @@ public class InstrumentSelection implements ResponsiveView {
         // Play pause bpm pane
         this.playPauseBpm = new GridPane();
         this.playPauseBpm.setVgap(10);
-        this.play = new Button("play");
-        this.play.setOnAction(event -> presenter.playLoop());
-        this.pause = new Button("pause");
-        this.pause.setOnAction(event -> presenter.stopLoop());
+        this.playPause = new ToggleButton("Play");
+        this.playPause.setOnAction(event -> {
+            if (playPause.isSelected()) {
+                playPause.setText("Stop");
+                presenter.playLoop();
+            } else if (!playPause.isSelected()) {
+                playPause.setText("Play");
+                presenter.stopLoop();
+            }
+        });
+        this.playPause.getStyleClass().add("play-pause");
         this.bpm = new TextField();
+        this.bpm.getStyleClass().add("bpm");
 
         // Instruments
         this.snareSelection = new StackPane();
@@ -153,7 +158,7 @@ public class InstrumentSelection implements ResponsiveView {
     private void setInstrumentSelectionDimensions(DoubleBinding width, DoubleBinding height) {
         this.playPauseBpm.prefWidthProperty().bind(width);
         this.playPauseBpm.prefHeightProperty().bind(height);
-        this.playPauseBpm.setStyle("-fx-background-color: #ffa2fc;");
+        //this.playPauseBpm.setStyle("-fx-background-color: #ffa2fc;");
 
         this.snareSelection.prefWidthProperty().bind(width);
         this.snareSelection.prefHeightProperty().bind(height);
@@ -173,17 +178,13 @@ public class InstrumentSelection implements ResponsiveView {
     }
 
     private void setPlayPauseBpmDimensions(DoubleBinding width, DoubleBinding height) {
-        DoubleBinding halfWidth = width.divide(2);
         DoubleBinding halfHeight = height.divide(2);
-        this.play.prefHeightProperty().bind(halfHeight);
-        this.play.prefWidthProperty().bind(halfWidth);
-        this.pause.prefHeightProperty().bind(halfHeight);
-        this.pause.prefWidthProperty().bind(halfWidth);
+        this.playPause.prefHeightProperty().bind(halfHeight);
+        this.playPause.prefWidthProperty().bind(width);
         this.bpm.prefHeightProperty().bind(halfHeight);
         this.bpm.prefWidthProperty().bind(width);
-        this.playPauseBpm.add(play, 0, 0);
-        this.playPauseBpm.add(pause,1, 0);
-        this.playPauseBpm.add(bpm, 0,1, 2, 1);
+        this.playPauseBpm.add(playPause, 0, 0);
+        this.playPauseBpm.add(bpm, 0,1);
     }
 
     private void buildSmallLayout() {
