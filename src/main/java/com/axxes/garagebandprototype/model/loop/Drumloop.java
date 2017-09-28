@@ -105,5 +105,4 @@ public class Drumloop implements Loop {
         }
         return instrumentSet;
     }
-
 }

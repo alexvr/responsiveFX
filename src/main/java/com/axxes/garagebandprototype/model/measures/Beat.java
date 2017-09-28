@@ -46,4 +46,8 @@ public class Beat {
     public void setAudioEffect(Instrument instrument, Effect effect){
         this.instrumentEffectsMap.put(instrument, effect);
     }
+
+    public boolean hasInstrument(Instrument instrument){
+        return instruments.contains(instrument);
+    }
 }
