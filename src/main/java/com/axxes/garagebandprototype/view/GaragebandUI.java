@@ -1,12 +1,14 @@
 package com.axxes.garagebandprototype.view;
 
 import com.axxes.garagebandprototype.presenter.Presenter;
-import javafx.beans.property.DoubleProperty;
 import javafx.geometry.Insets;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -69,6 +71,11 @@ public class GaragebandUI {
 
         this.rootPane.setTop(menuBar);
         this.rootPane.setCenter(contentPane);
+    }
+
+    @PostConstruct
+    public void init() {
+        changeToSmallLayout();
     }
 
     public void changeToLargeLayout() {
