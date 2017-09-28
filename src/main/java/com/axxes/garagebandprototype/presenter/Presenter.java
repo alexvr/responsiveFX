@@ -284,7 +284,7 @@ public class Presenter {
         hasInstrument.addListener(observable -> {
             button.styleProperty().set(hasInstrument.getValue() ? "-fx-background-color: darkgray" : "");
         });
-//        button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
+        // button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
     }
 
 
