@@ -11,6 +11,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -28,13 +30,13 @@ public class BeatGrid implements ResponsiveView {
     private ReadOnlyDoubleProperty rootWidth;
     private ReadOnlyDoubleProperty rootHeight;
 
-    @Autowired
-    private Presenter presenter;
-
     private Pane beatGridContainer;
     private GridPane beatGrid;
+    private Highlighter highlighter;
     private int rowCount;
 
+    @Autowired
+    private Presenter presenter;
     @Autowired
     private Drumloop drumloop;
     private int beats;
@@ -54,18 +56,19 @@ public class BeatGrid implements ResponsiveView {
     private Distortion distortionEffect;
 
     public BeatGrid() {
+        this.rootWidth = new SimpleDoubleProperty(0);
+        this.rootHeight = new SimpleDoubleProperty(0);
+
         this.beatGridContainer = new Pane();
         this.beatGridContainer.setStyle("-fx-background-color: #33c2ff;");
         this.beatGrid = new GridPane();
-        this.rootWidth = new SimpleDoubleProperty(0);
-        this.rootHeight = new SimpleDoubleProperty(0);
+        this.highlighter = new Highlighter();
     }
 
     @PostConstruct
     public void init() {
         this.beats = drumloop.getMeasures().stream().map(Measure::getBeats).mapToInt(Collection::size).sum();
         this.beatsPerMeasure = drumloop.getBeatsPerMeasure();
-        // this.createBaseGrid();
         this.buildLayout();
     }
 
@@ -92,15 +95,10 @@ public class BeatGrid implements ResponsiveView {
     }
 
     private void initialiseSmallLayout() {
-        //this.setContainerSize(rootWidth.multiply(1), rootHeight.multiply(0.75));
         this.setBeatGridSize(rootWidth.subtract(20), rootHeight.multiply(0.75));
+        this.highlighter.setWidthProperty(rootWidth.subtract(20).divide(this.beats + 1));
+        this.highlighter.setHeightProperty(rootHeight.multiply(0.75));
     }
-
-    private void setContainerSize(DoubleBinding width, DoubleBinding height) {
-        //this.beatGridContainer.prefWidthProperty().bind(width);
-        this.beatGridContainer.prefHeightProperty().bind(height);
-    }
-
 
     private void setBeatGridSize(DoubleBinding width, DoubleBinding height) {
         this.beatGrid.setStyle("-fx-background-color: #ffca28;");
@@ -132,16 +130,13 @@ public class BeatGrid implements ResponsiveView {
     }
 
     private void buildLayout() {
-        this.beatGridContainer.getChildren().addAll(beatGrid);
+        this.beatGridContainer.getChildren().addAll(beatGrid, highlighter.getHighlighter());
     }
 
     private void initialiseLargeLayout() {
-        //this.setContainerSize(rootWidth.multiply(0.75), rootHeight.multiply(1));
         this.setBeatGridSize(rootWidth.multiply(0.75).subtract(15), rootHeight.subtract(20));
-    }
-
-    public void add(Node node, int column, int row) {
-        this.beatGrid.add(node, column, row);
+        this.highlighter.setWidthProperty(rootWidth.multiply(0.75).subtract(15).divide(this.beats + 1));
+        this.highlighter.setHeightProperty(rootHeight.subtract(20));
     }
 
     public void addLabel(String description, int column, int row) {
@@ -247,10 +242,6 @@ public class BeatGrid implements ResponsiveView {
         this.rowCount++;
     }
 
-    public void resetRowCount() {
-        this.rowCount = 1;
-    }
-
     public int getRowCount() {
         return this.rowCount;
     }
@@ -259,14 +250,14 @@ public class BeatGrid implements ResponsiveView {
         return rootWidth;
     }
 
-    public ReadOnlyDoubleProperty getRootHeight() {
-        return rootHeight;
-    }
-
     public void resetInstruments() {
         this.beatGrid.getChildren().clear();
         createBaseGrid();
         this.rowCount = 1;
+    }
+
+    public void stepHighlight(int beat) {
+        this.highlighter.setHighlightStep(beat);
     }
 
 }
