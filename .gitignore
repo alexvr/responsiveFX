@@ -1,5 +1,6 @@
 target/
 !.mvn/wrapper/maven-wrapper.jar
+drumloops/
 
 ### STS ###
 .apt_generated
