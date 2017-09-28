@@ -67,13 +67,6 @@ public class Presenter {
     private final HiHat hiHat;
     private final Snare snare;
 
-    private final Echo echoEffect;
-    private final NoEffect noEffect;
-    private final Reverb reverbEffect;
-    private final RingModulator ringModulatorEffect;
-    private final Flanger flangerEffect;
-    private final Distortion distortionEffect;
-
     @Autowired
     public Presenter(Drumloop drumloop, MusicXmlParser parser, MusicXmlWriter writer, AudioDevice audioDevice, Kick kick, Cymbal cymbal, HiHat hiHat, Flanger flangerEffect, Snare snare, Echo echoEffect, NoEffect noEffect, RingModulator ringModulatorEffect, Reverb reverbEffect, Distortion distortionEffect) {
         this.parser = parser;
@@ -84,12 +77,6 @@ public class Presenter {
         this.cymbal = cymbal;
         this.hiHat = hiHat;
         this.snare = snare;
-        this.flangerEffect = flangerEffect;
-        this.echoEffect = echoEffect;
-        this.noEffect = noEffect;
-        this.ringModulatorEffect = ringModulatorEffect;
-        this.reverbEffect = reverbEffect;
-        this.distortionEffect = distortionEffect;
         this.highlighterPosition = 0;
     }
 
@@ -209,55 +196,7 @@ public class Presenter {
         this.beatGrid.incrementRowCount();
     }
 
-    private void createEffectsContextMenu(Instrument instrument, Button button, int measureCount, int beatCount) {
-        ContextMenu effectsMenu = new ContextMenu();
-
-        MenuItem noEffectItem = new MenuItem("No effect");
-        Rectangle noEffectRectangle = new Rectangle(10, 10);
-        noEffectRectangle.setFill(Color.DARKGRAY);
-        noEffectItem.setGraphic(noEffectRectangle);
-        noEffectItem.setOnAction(event -> {
-            instrumentAddEffect(instrument, measureCount, beatCount, noEffect);
-            if (!button.getStyle().equals("")){
-                button.setStyle("-fx-background-color: darkgray");
-            }
-        });
-
-        MenuItem echoEffectItem = new MenuItem("Echo");
-        Rectangle echoRectangle = new Rectangle(10, 10);
-        echoRectangle.setFill(Color.AQUA);
-        echoEffectItem.setGraphic(echoRectangle);
-        echoEffectItem.setOnAction(event -> {
-            instrumentAddEffect(instrument, measureCount, beatCount, echoEffect);
-            if (!button.getStyle().equals("")){
-                button.setStyle("-fx-background-color: aqua");
-            }
-        });
-
-        MenuItem reverbEffectItem = new MenuItem("Reverb");
-        reverbEffectItem.setOnAction(event -> {
-            instrumentAddEffect(instrument, measureCount, beatCount, reverbEffect);
-            if (!button.getStyle().equals("")) {
-                button.setStyle("-fx-background-color: chocolate");
-            }
-        });
-
-        MenuItem ringModulatorEffectItem = new MenuItem("Ring Modulator");
-        ringModulatorEffectItem.setOnAction(event -> {
-            instrumentAddEffect(instrument, measureCount, beatCount, ringModulatorEffect);
-        });
-
-        MenuItem flangerEffectItem = new MenuItem("Flanger");
-        flangerEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, flangerEffect));
-
-        MenuItem distortionEffectItem = new MenuItem(("Distortion"));
-        distortionEffectItem.setOnAction(event -> instrumentAddEffect(instrument, measureCount, beatCount, distortionEffect));
-
-        effectsMenu.getItems().addAll(noEffectItem, echoEffectItem, reverbEffectItem, ringModulatorEffectItem, flangerEffectItem, distortionEffectItem);
-        button.setContextMenu(effectsMenu);
-    }
-
-    private void instrumentAddEffect(Instrument instrument, int measureCount, int beatCount, Effect effect) {
+    public void instrumentAddEffect(Instrument instrument, int measureCount, int beatCount, Effect effect) {
         this.drumloop.getMeasures()
                 .get(measureCount)
                 .getBeats()
@@ -274,7 +213,7 @@ public class Presenter {
         }
     }
 
-    public void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
+    public void bindBeatToButton(Instrument instrument, ToggleButton button, int measureCount, int beatCount) {
         Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
         BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
         hasInstrument.addListener(observable -> button.styleProperty().set(hasInstrument.getValue() ? "-fx-background-color: darkgray" : ""));
