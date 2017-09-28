@@ -133,15 +133,22 @@ public class BeatGrid implements ResponsiveView {
         this.beatGrid.add(createLabel(description), column, row);
     }
 
-    public void addInstrumentButtons(Instrument instrument, int row) {
+    public void addInstrumentButtons(Instrument instrument) {
         for (int i = 0; i < this.beats; i++) {
             int measureCount = i / 4;
             int beatCount = i % 4;
             Button button = createToggleInstrumentButton(instrument, measureCount, beatCount);
+            if (hasBeatInstrument(measureCount, beatCount, instrument)){
+                button.setStyle("-fx-background-color: darkgray");
+            }
             this.beatGrid.add(button, i + 1, rowCount);
 
             // createEffectsContextMenu(instrument, button, measureCount, beatCount);
         }
+    }
+
+    private boolean hasBeatInstrument(int measureCount, int beatCount, Instrument instrument) {
+        return this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount).hasInstrument(instrument);
     }
 
     private Button createToggleInstrumentButton(Instrument instrument, int measureCount, int beatCount) {
@@ -179,6 +186,7 @@ public class BeatGrid implements ResponsiveView {
 
     public void resetInstruments() {
         this.beatGrid.getChildren().clear();
+        createBaseGrid();
         this.rowCount = 1;
     }
 

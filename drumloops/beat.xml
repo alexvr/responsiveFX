@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<drumloop bpm="164">
+  <measure id="0">
+    <beat id="0">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+    </beat>
+    <beat id="1">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+    </beat>
+    <beat id="2">
+      <instrument id="0">
+        <name>Snare</name>
+      </instrument>
+    </beat>
+    <beat id="3"/>
+  </measure>
+  <measure id="1">
+    <beat id="0">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+    </beat>
+    <beat id="1">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+    </beat>
+    <beat id="2">
+      <instrument id="0">
+        <name>Snare</name>
+      </instrument>
+    </beat>
+    <beat id="3"/>
+  </measure>
+</drumloop>

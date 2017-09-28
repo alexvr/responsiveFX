@@ -5,7 +5,6 @@ import com.axxes.garagebandprototype.Audio.effects.*;
 import com.axxes.garagebandprototype.model.instrument.*;
 import com.axxes.garagebandprototype.model.loop.Drumloop;
 import com.axxes.garagebandprototype.model.measures.Beat;
-import com.axxes.garagebandprototype.model.measures.Measure;
 import com.axxes.garagebandprototype.util.MusicXmlParser;
 import com.axxes.garagebandprototype.util.MusicXmlWriter;
 import com.axxes.garagebandprototype.view.BeatGrid;
@@ -17,17 +16,11 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.*;
-import javafx.fxml.FXML;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -40,16 +33,10 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Controller
 public class Presenter {
-
-    // @FXML
-    // private GridPane grid;
 
     @Autowired
     private BeatGrid beatGrid;
@@ -208,7 +195,7 @@ public class Presenter {
         disableAddInstrumentButton(instrument);
         int rowCount = this.beatGrid.getRowCount();
         this.beatGrid.addLabel(instrument.getClass().getSimpleName(), 0, rowCount);
-        this.beatGrid.addInstrumentButtons(instrument, rowCount);
+        this.beatGrid.addInstrumentButtons(instrument);
 
         this.beatGrid.incrementRowCount();
     }
@@ -281,10 +268,8 @@ public class Presenter {
     public void bindBeatToButton(Instrument instrument, Button button, int measureCount, int beatCount) {
         Beat beat = this.drumloop.getMeasures().get(measureCount).getBeats().get(beatCount);
         BooleanBinding hasInstrument = Bindings.createBooleanBinding(() -> beat.getInstruments().contains(instrument), beat.getInstruments());
-        hasInstrument.addListener(observable -> {
-            button.styleProperty().set(hasInstrument.getValue() ? "-fx-background-color: darkgray" : "");
-        });
-        // button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
+        hasInstrument.addListener(observable -> button.styleProperty().set(hasInstrument.getValue() ? "-fx-background-color: darkgray" : ""));
+//        button.styleProperty().bind(Bindings.when(hasInstrument).then("-fx-background-color: darkgray").otherwise(""));
     }
 
 
@@ -314,14 +299,19 @@ public class Presenter {
 
         File file = fileChooser.showOpenDialog(dialog);
 
-        this.highlighterPosition = 0;
-        this.highLighter.setX(85);
-        this.highLighter.setHeight(30);
-        deleteInstrumentLines();
+//        this.highlighterPosition = 0;
+//        this.highLighter.setX(85);
+//        this.highLighter.setHeight(30);
         if (file != null) {
+            deleteInstrumentLines();
             parser.parserDrumloopFromXml(file);
             createInstrumentLines();
+            setBeatButtonState();
         }
+    }
+
+    private void setBeatButtonState() {
+
     }
 
     private void deleteInstrumentLines() {

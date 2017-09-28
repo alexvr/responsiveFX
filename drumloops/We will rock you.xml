@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<drumloop bpm="162">
+  <measure id="0">
+    <beat id="0">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+      <instrument id="1">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+    <beat id="1">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+      <instrument id="1">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+    <beat id="2">
+      <instrument id="0">
+        <name>Snare</name>
+      </instrument>
+      <instrument id="1">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+    <beat id="3">
+      <instrument id="0">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+  </measure>
+  <measure id="1">
+    <beat id="0">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+      <instrument id="1">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+    <beat id="1">
+      <instrument id="0">
+        <name>Kick</name>
+      </instrument>
+      <instrument id="1">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+    <beat id="2">
+      <instrument id="0">
+        <name>Snare</name>
+      </instrument>
+      <instrument id="1">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+    <beat id="3">
+      <instrument id="0">
+        <name>HiHat</name>
+      </instrument>
+    </beat>
+  </measure>
+</drumloop>
