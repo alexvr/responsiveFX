@@ -15,16 +15,9 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -46,11 +39,7 @@ public class Presenter {
     @Autowired
     private InstrumentSelection instrumentSelection;
 
-    private Rectangle highLighter;
     private int highlighterPosition;
-
-    private Slider slider;
-    private boolean programmaticSliderChange;
 
     private final MusicXmlParser parser;
     private final MusicXmlWriter writer;
@@ -58,7 +47,6 @@ public class Presenter {
     private Timeline loopTimeline;
     private IntegerProperty bpm;
     private int beats;
-    private int beatsPerMeasure;
 
     private final AudioDevice audioDevice;
 
@@ -81,9 +69,7 @@ public class Presenter {
         this.hiHat = hiHat;
         this.snare = snare;
         this.noEffect = noEffect;
-
         this.highlighterPosition = 0;
-
     }
 
     @PostConstruct
@@ -104,73 +90,23 @@ public class Presenter {
                 Duration.millis(timeBetweenBeats),
                 ae -> {
                     Logger.getLogger(Presenter.class).info("Drumloop step.");
-                    stepHighlighterAndSlider();
+                    stepHighlighter();
                     this.drumloop.step();
                 }));
         this.loopTimeline.setCycleCount(Animation.INDEFINITE);
     }
 
-
-    private void createSlider(){
-        this.slider = new Slider(0, this.beats - 1, this.highlighterPosition);
-        this.slider.setShowTickMarks(true);
-        this.slider.setBlockIncrement(1);
-        this.slider.setSnapToTicks(true);
-        this.slider.setMajorTickUnit(1);
-        this.slider.setMinorTickCount(0);
-        this.slider.setLayoutX(105);
-        this.slider.setLayoutY(40);
-        this.slider.setPrefWidth(this.beats*60 - 40);
-        this.slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(!programmaticSliderChange){
-                changeHighlighterPosition(newValue.intValue());
-            }
-        });
-
-        //root.getChildren().add(slider);
-    }
-
-    private void changeHighlighterPosition(int position){
-        this.highlighterPosition = position;
-        int measureCount = position / this.beatsPerMeasure;
-        int beatCount = position % this.beatsPerMeasure;
-        drumloop.setCurrentMeasure(measureCount);
-        drumloop.getMeasures().get(measureCount).setCurrentBeat(beatCount);
-        this.highLighter.setX(85 + (60*this.highlighterPosition));
-    }
-
-    private Label createLabel(String text) {
-        Label label = new Label(text);
-        label.setAlignment(Pos.CENTER);
-        ReadOnlyDoubleProperty width = this.beatGrid.getRootWidth();
-        DoubleBinding db = width.subtract(20).divide(this.beats);
-        label.prefWidthProperty().bind(db);
-        return label;
-    }
-
-    private void createHighlighter() {
-        this.highLighter = new Rectangle(85, 65, 60, 30);
-        this.highlighterPosition = 0;
-        this.highLighter.setMouseTransparent(true);
-        this.highLighter.setFill(Color.RED);
-        this.highLighter.setOpacity(0.5);
-        //this.root.getChildren().add(highLighter);
-    }
-
-    private void stepHighlighterAndSlider(){
-        /*if (this.highlighterPosition == this.beats){
-            this.highlighterPosition = 0;
-        }
-        this.highLighter.setX(85 + (60*this.highlighterPosition));
-        programmaticSliderChange = true;
-        this.slider.setValue(this.highlighterPosition);
-        programmaticSliderChange = false;
-        this.highlighterPosition++;*/
+    private void stepHighlighter(){
         this.beatGrid.stepHighlight(highlighterPosition);
         this.highlighterPosition++;
         if (this.highlighterPosition == this.beats) {
             this.highlighterPosition = 0;
         }
+    }
+
+    private void resetHighlighter() {
+        this.highlighterPosition = 0;
+        this.beatGrid.stepHighlight(0);
     }
 
     private void disableAddInstrumentButton(Instrument instrument) {
@@ -193,7 +129,6 @@ public class Presenter {
     }
 
     public void addInstrumentLine(Instrument instrument) {
-        // this.highLighter.setHeight(this.highLighter.getHeight()+50);
         disableAddInstrumentButton(instrument);
         int rowCount = this.beatGrid.getRowCount();
         this.beatGrid.addLabel(instrument.getClass().getSimpleName(), 0, rowCount);
@@ -247,22 +182,15 @@ public class Presenter {
 
         File file = fileChooser.showOpenDialog(dialog);
 
-//        this.highlighterPosition = 0;
-//        this.highLighter.setX(85);
-//        this.highLighter.setHeight(30);
+        this.resetHighlighter();
         if (file != null) {
             deleteInstrumentLines();
             parser.parserDrumloopFromXml(file);
             createInstrumentLines();
-            setBeatButtonState();
             if (instrumentSelection.isPlayPauseSelected()) {
                 playLoop();
             }
         }
-    }
-
-    private void setBeatButtonState() {
-
     }
 
     private void deleteInstrumentLines() {
