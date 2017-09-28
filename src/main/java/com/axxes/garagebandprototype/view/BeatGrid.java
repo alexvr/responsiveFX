@@ -157,11 +157,8 @@ public class BeatGrid implements ResponsiveView {
         // TODO: Fix width is same than height.
         instrumentButton.prefWidthProperty().bind(buttonWidth);
         instrumentButton.prefHeightProperty().bind(buttonWidth);
-
         instrumentButton.getStyleClass().add(instrument.getClass().getSimpleName().toLowerCase());
-
         instrumentButton.setOnAction(event -> presenter.instrumentToggle(instrument, measureCount, beatCount));
-
         presenter.bindBeatToButton(instrument, instrumentButton, measureCount, beatCount);
 
         return instrumentButton;
