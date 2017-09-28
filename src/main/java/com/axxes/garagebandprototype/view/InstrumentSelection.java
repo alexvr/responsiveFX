@@ -229,4 +229,7 @@ public class InstrumentSelection implements ResponsiveView {
         this.snareSelection.setDisable(isDisabled);
     }
 
+    public boolean isPlayPauseSelected() {
+        return playPause.isSelected();
+    }
 }

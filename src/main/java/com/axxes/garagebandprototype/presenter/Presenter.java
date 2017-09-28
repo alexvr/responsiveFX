@@ -307,6 +307,9 @@ public class Presenter {
             parser.parserDrumloopFromXml(file);
             createInstrumentLines();
             setBeatButtonState();
+            if (instrumentSelection.isPlayPauseSelected()) {
+                playLoop();
+            }
         }
     }
 
