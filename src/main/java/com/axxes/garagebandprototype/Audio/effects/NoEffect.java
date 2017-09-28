@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-import static org.lwjgl.openal.EXTEfx.*;
 import static org.lwjgl.openal.EXTEfx.AL_EFFECT_NULL;
 
 @Component
@@ -14,7 +13,8 @@ public class NoEffect extends Effect {
 
     @PostConstruct
     private void init(){
-        this.effect = audioDevice.createEffect(AL_EFFECT_NULL);
+        this.effectType = AL_EFFECT_NULL;
+        this.effect = audioDevice.createEffect(effectType);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
     }
 }

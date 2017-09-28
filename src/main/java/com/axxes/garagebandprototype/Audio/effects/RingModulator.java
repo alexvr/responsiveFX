@@ -13,7 +13,8 @@ public class RingModulator extends Effect{
 
     @PostConstruct
     private void init(){
-        this.effect = audioDevice.createEffect(AL_EFFECT_RING_MODULATOR);
+        this.effectType = AL_EFFECT_RING_MODULATOR;
+        this.effect = audioDevice.createEffect(effectType);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
         alEffectf(effect, AL_RING_MODULATOR_FREQUENCY, 50);
     }

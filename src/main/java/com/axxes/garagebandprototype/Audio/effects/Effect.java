@@ -10,10 +10,16 @@ public class Effect {
     @Autowired
     protected AudioDevice audioDevice;
 
+    protected int effectType;
     protected int effect;
     protected int effectSlot;
 
+
     public int getEffectSlot() {
         return effectSlot;
+    }
+
+    public int getEffectType() {
+        return effectType;
     }
 }

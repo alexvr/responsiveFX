@@ -13,7 +13,8 @@ public class Reverb extends Effect {
 
     @PostConstruct
     private void init(){
-        this.effect = audioDevice.createEffect(AL_EFFECT_REVERB);
+        this.effectType = AL_EFFECT_REVERB;
+        this.effect = audioDevice.createEffect(effectType);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
         alEffectf(this.effect, AL_REVERB_DENSITY, 0.8f);
         alEffectf(this.effect, AL_REVERB_DIFFUSION, 0.2f);

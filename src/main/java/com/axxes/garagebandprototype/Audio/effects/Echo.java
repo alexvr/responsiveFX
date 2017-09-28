@@ -13,7 +13,8 @@ public class Echo extends Effect{
 
     @PostConstruct
     private void init(){
-        this.effect = audioDevice.createEffect(AL_EFFECT_ECHO);
+        this.effectType = AL_EFFECT_ECHO;
+        this.effect = audioDevice.createEffect(effectType);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
         alEffectf(effect, AL_ECHO_DELAY, 0.01f);
         alEffectf(effect, AL_ECHO_LRDELAY, 0.01f);

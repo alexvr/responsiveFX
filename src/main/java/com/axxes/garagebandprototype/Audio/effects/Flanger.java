@@ -13,7 +13,8 @@ public class Flanger extends Effect {
 
     @PostConstruct
     private void init(){
-        this.effect = audioDevice.createEffect(AL_EFFECT_FLANGER);
+        this.effectType = AL_EFFECT_FLANGER;
+        this.effect = audioDevice.createEffect(effectType);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
         alEffectf(effect, AL_FLANGER_RATE, 5);
     }

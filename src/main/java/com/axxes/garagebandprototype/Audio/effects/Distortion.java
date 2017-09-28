@@ -13,7 +13,8 @@ public class Distortion extends Effect {
 
     @PostConstruct
     private void init(){
-        this.effect = audioDevice.createEffect(AL_EFFECT_DISTORTION);
+        this.effectType = AL_EFFECT_DISTORTION;
+        this.effect = audioDevice.createEffect(effectType);
         this.effectSlot = audioDevice.createEffectSlot(this.effect);
         alEffectf(effect, AL_DISTORTION_EDGE, 0.6f);
 
