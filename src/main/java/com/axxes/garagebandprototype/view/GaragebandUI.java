@@ -18,7 +18,7 @@ public class GaragebandUI {
     @Autowired
     private Presenter presenter;
     private BorderPane rootPane;
-    private StackPane contentPane;
+    private Pane contentPane;
     private HBox hWrapper;
     private VBox vWrapper;
 
@@ -34,7 +34,7 @@ public class GaragebandUI {
         this.rootPane.getStylesheets().add("/css/garbage.css");
 
         // Root pane
-        this.contentPane = new StackPane();
+        this.contentPane = new Pane();
 
         // Horizontal and vertical layout.
         this.hWrapper = new HBox();
@@ -69,12 +69,6 @@ public class GaragebandUI {
 
         this.rootPane.setTop(menuBar);
         this.rootPane.setCenter(contentPane);
-
-    }
-
-    @PostConstruct
-    public void init() {
-        changeToLargeLayout();
     }
 
     public void changeToLargeLayout() {
@@ -89,7 +83,7 @@ public class GaragebandUI {
     }
 
     private void buildLargeLayout() {
-        this.instrumentSelection = this.instrumentSelectionView.getLargeView(contentPane.getWidth(), contentPane.getHeight());
+        this.instrumentSelection = this.instrumentSelectionView.getLargeView(contentPane.widthProperty(), contentPane.heightProperty());
         this.beatGrid = this.beatGridView.getLargeView(contentPane.widthProperty(), contentPane.heightProperty());
 
         this.hWrapper.getChildren().addAll(beatGrid, instrumentSelection);
@@ -102,7 +96,7 @@ public class GaragebandUI {
     }
 
     private void buildSmallLayout() {
-        this.instrumentSelection = this.instrumentSelectionView.getSmallView(contentPane.getWidth(), contentPane.getHeight());
+        this.instrumentSelection = this.instrumentSelectionView.getSmallView(contentPane.widthProperty(), contentPane.heightProperty());
         this.beatGrid = this.beatGridView.getSmallView(contentPane.widthProperty(), contentPane.heightProperty());
 
         this.vWrapper.getChildren().addAll(beatGrid, instrumentSelection);

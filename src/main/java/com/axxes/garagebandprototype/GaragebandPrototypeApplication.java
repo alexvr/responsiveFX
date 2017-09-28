@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @SpringBootApplication
 public class GaragebandPrototypeApplication extends Application {
+
+    private double previousWidth;
 
     private ConfigurableApplicationContext context;
 
@@ -27,11 +31,16 @@ public class GaragebandPrototypeApplication extends Application {
             primaryStage.setMinWidth(800);
 
             primaryStage.widthProperty().addListener(e -> {
-                if(primaryStage.getWidth() < 1000) {
+                if(primaryStage.getWidth() <= 1000 && previousWidth > 1000) {
+                    System.out.println("SMALL LAYOUT: width: " + primaryStage.getWidth() + ", height: " + primaryStage.getHeight());
                     garagebandUI.changeToSmallLayout();
-                } else {
+                } else if (primaryStage.getWidth() > 1000 && previousWidth <= 1000){
+                    System.out.println("LARGE LAYOUT: width: " + primaryStage.getWidth() + ", height: " + primaryStage.getHeight());
                     garagebandUI.changeToLargeLayout();
                 }
+
+                previousWidth = primaryStage.getWidth();
+
             });
 
             primaryStage.setScene(new Scene(garagebandUI.getContentPane(), 1400, 800));

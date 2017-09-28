@@ -21,11 +21,12 @@ import java.util.Collection;
 @Component
 public class BeatGrid implements ResponsiveView {
 
+    private ReadOnlyDoubleProperty rootWidth;
+    private ReadOnlyDoubleProperty rootHeight;
+
     private Pane beatGridContainer;
     private GridPane beatGrid;
     private int rowCount;
-    private ReadOnlyDoubleProperty rootWidth;
-    private ReadOnlyDoubleProperty rootHeight;
 
     @Autowired
     private Drumloop drumloop;
@@ -34,6 +35,7 @@ public class BeatGrid implements ResponsiveView {
 
     public BeatGrid() {
         this.beatGridContainer = new Pane();
+        this.beatGridContainer.setStyle("-fx-background-color: #33c2ff;");
         this.beatGrid = new GridPane();
         this.rootWidth = new SimpleDoubleProperty(0);
         this.rootHeight = new SimpleDoubleProperty(0);
@@ -52,7 +54,6 @@ public class BeatGrid implements ResponsiveView {
         this.rootWidth = width;
         this.rootHeight = height;
 
-        this.clearLayout();
         this.createBaseGrid();
         this.initialiseSmallLayout();
 
@@ -64,25 +65,19 @@ public class BeatGrid implements ResponsiveView {
         this.rootWidth = width;
         this.rootHeight = height;
 
-        this.clearLayout();
         this.createBaseGrid();
         this.initialiseLargeLayout();
 
         return this.beatGridContainer;
     }
 
-    private void clearLayout() {
-        // this.beatGridContainer.getChildren().clear();
-        // this.beatGrid.getChildren().clear();
-    }
-
     private void initialiseSmallLayout() {
-        this.setContainerSize(rootWidth.multiply(1), rootHeight.multiply(0.75));
+        //this.setContainerSize(rootWidth.multiply(1), rootHeight.multiply(0.75));
         this.setBeatGridSize(rootWidth.subtract(20), rootHeight.multiply(0.75));
     }
 
     private void setContainerSize(DoubleBinding width, DoubleBinding height) {
-        this.beatGridContainer.prefWidthProperty().bind(width);
+        //this.beatGridContainer.prefWidthProperty().bind(width);
         this.beatGridContainer.prefHeightProperty().bind(height);
     }
 
@@ -107,6 +102,7 @@ public class BeatGrid implements ResponsiveView {
     private Label createLabel(String text, ReadOnlyDoubleProperty width) {
         Label label = new Label(text);
         label.setAlignment(Pos.CENTER);
+        label.setStyle("-fx-background-color: #f200ff;");
 
         DoubleBinding labelWidth = width.subtract(20).divide(this.beats);
 
@@ -119,7 +115,7 @@ public class BeatGrid implements ResponsiveView {
     }
 
     private void initialiseLargeLayout() {
-        this.setContainerSize(rootWidth.multiply(0.75), rootHeight.multiply(1));
+        //this.setContainerSize(rootWidth.multiply(0.75), rootHeight.multiply(1));
         this.setBeatGridSize(rootWidth.multiply(0.75).subtract(15), rootHeight.subtract(20));
     }
 

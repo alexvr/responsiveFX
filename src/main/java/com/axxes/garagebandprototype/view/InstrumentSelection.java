@@ -1,5 +1,8 @@
 package com.axxes.garagebandprototype.view;
 
+import javafx.beans.binding.DoubleBinding;
+import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -10,7 +13,10 @@ import javafx.scene.shape.Rectangle;
 import org.springframework.stereotype.Component;
 
 @Component
-public class InstrumentSelection {
+public class InstrumentSelection implements ResponsiveView {
+
+    private ReadOnlyDoubleProperty rootWidth;
+    private ReadOnlyDoubleProperty rootHeight;
 
     private Pane instrumentSelection;
     private HBox hSelection;
@@ -27,6 +33,9 @@ public class InstrumentSelection {
     private StackPane cymbalSelection;
 
     public InstrumentSelection() {
+        this.rootWidth = new SimpleDoubleProperty(0);
+        this.rootHeight = new SimpleDoubleProperty(0);
+
         // Instrument selection pane
         this.instrumentSelection = new Pane();
         this.hSelection = new HBox();
@@ -86,16 +95,19 @@ public class InstrumentSelection {
         this.cymbalSelection.getChildren().add(cymbalView);
     }
 
-    public Pane getSmallView(double width, double height) {
+    public Pane getSmallView(ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) {
+        this.rootWidth = width;
+        this.rootHeight = height;
+
         this.clearLayout();
-        this.initialiseSmallLayout(width, height);
+        this.initialiseSmallLayout();
         this.buildSmallLayout();
         return this.instrumentSelection;
     }
 
-    public Pane getLargeView(double width, double height) {
+    public Pane getLargeView(ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) {
         this.clearLayout();
-        this.initialiseLargeLayout(width, height);
+        this.initialiseLargeLayout();
         this.buildLargeLayout();
         return this.instrumentSelection;
     }
@@ -107,51 +119,55 @@ public class InstrumentSelection {
         this.playPauseBpm.getChildren().clear();
     }
 
-    private void initialiseSmallLayout(double width, double height) {
+    private void initialiseSmallLayout() {
         // Substract the padding
-        double calculatedWidth = width - 82.5;
-        double calculatedHeight = (height * 0.25) - 60;
-        System.out.println("Small instrument selection width: " + calculatedWidth + ", height: " + calculatedHeight);
+        if (this.rootWidth.getValue() > 0) {
+            DoubleBinding calculatedWidth = rootWidth.subtract(82.5).divide(5);
+            DoubleBinding calculatedHeight = rootHeight.multiply(0.25).subtract(60);
+            System.out.println("Small instrument selection width: " + calculatedWidth.get() + ", height: " + calculatedHeight.get());
 
-        setContainerSize(width, height * 0.25);
-        setInstrumentSelectionDimensions(calculatedWidth / 5, calculatedHeight);
-        setPlayPauseBpmDimensions(calculatedWidth / 5, calculatedHeight);
+            setContainerSize(rootWidth.multiply(1), rootHeight.multiply(0.25));
+            setInstrumentSelectionDimensions(calculatedWidth, calculatedHeight);
+            setPlayPauseBpmDimensions(calculatedWidth, calculatedHeight);
+        }
     }
 
-    private void setContainerSize(double width, double height) {
-        this.instrumentSelection.setPrefWidth(width);
-        this.instrumentSelection.setPrefHeight(height * 0.25);
+    private void setContainerSize(DoubleBinding width, DoubleBinding height) {
+        this.instrumentSelection.prefWidthProperty().bind(width);
+        this.instrumentSelection.prefWidthProperty().bind(height);
     }
 
-    private void setInstrumentSelectionDimensions(double width, double height) {
-        this.playPauseBpm.setPrefWidth(width);
-        this.playPauseBpm.setMinHeight(height);
+    private void setInstrumentSelectionDimensions(DoubleBinding width, DoubleBinding height) {
+        this.playPauseBpm.prefWidthProperty().bind(width);
+        this.playPauseBpm.prefHeightProperty().bind(height);
         this.playPauseBpm.setStyle("-fx-background-color: #ffa2fc;");
 
-        this.snareSelection.setPrefWidth(width);
-        this.snareSelection.setPrefHeight(height);
+        this.snareSelection.prefWidthProperty().bind(width);
+        this.snareSelection.prefHeightProperty().bind(height);
         this.snareSelection.setStyle("-fx-background-color: #90fff8;");
 
-        this.hihatSelection.setPrefWidth(width);
-        this.hihatSelection.setPrefHeight(height);
+        this.hihatSelection.prefWidthProperty().bind(width);
+        this.hihatSelection.prefHeightProperty().bind(height);
         this.hihatSelection.setStyle("-fx-background-color: #90fff8;");
 
-        this.kickSelection.setPrefWidth(width);
-        this.kickSelection.setPrefHeight(height);
+        this.kickSelection.prefWidthProperty().bind(width);
+        this.kickSelection.prefHeightProperty().bind(height);
         this.kickSelection.setStyle("-fx-background-color: #90fff8;");
 
-        this.cymbalSelection.setPrefWidth(width);
-        this.cymbalSelection.setPrefHeight(height);
+        this.cymbalSelection.prefWidthProperty().bind(width);
+        this.cymbalSelection.prefHeightProperty().bind(height);
         this.cymbalSelection.setStyle("-fx-background-color: #90fff8;");
     }
 
-    private void setPlayPauseBpmDimensions(double width, double height) {
-        this.r1.setHeight(height / 2);
-        this.r1.setWidth(width / 2);
-        this.r2.setHeight(height / 2);
-        this.r2.setWidth(width / 2);
-        this.r3.setHeight(height / 2);
-        this.r3.setWidth(width);
+    private void setPlayPauseBpmDimensions(DoubleBinding width, DoubleBinding height) {
+        DoubleBinding halfWidth = width.divide(2);
+        DoubleBinding halfHeight = height.divide(2);
+        this.r1.heightProperty().bind(halfHeight);
+        this.r1.widthProperty().bind(halfWidth);
+        this.r2.heightProperty().bind(halfHeight);
+        this.r2.widthProperty().bind(halfWidth);
+        this.r3.heightProperty().bind(halfHeight);
+        this.r3.widthProperty().bind(width);
         this.playPauseBpm.add(r1, 0, 0);
         this.playPauseBpm.add(r2,1, 0);
         this.playPauseBpm.add(r3, 0,1, 2, 1);
@@ -162,20 +178,22 @@ public class InstrumentSelection {
         this.instrumentSelection.getChildren().add(hSelection);
     }
 
-    private void initialiseLargeLayout(double width, double height) {
-        // Substract the padding
-        double calculatedWidth = (width * 0.25) - 35;
-        double calculatedHeight = height - 95;
-        System.out.println("Large instrument selection width: " + calculatedWidth + ", height: " + calculatedHeight);
+    private void initialiseLargeLayout() {
+        if (this.rootWidth.getValue() > 0) {
+            // Substract the padding
+            DoubleBinding calculatedWidth = rootWidth.multiply(0.25).subtract(35);
+            DoubleBinding calculatedHeight = rootHeight.subtract(95).divide(5);
+            System.out.println("Large instrument selection width: " + calculatedWidth.get() + ", height: " + calculatedHeight.get());
 
-        setContainerSize(width * 0.25, height);
-        setInstrumentSelectionDimensions(calculatedWidth, calculatedHeight / 5);
-        setPlayPauseBpmDimensions(calculatedWidth, calculatedHeight / 5);
+            setContainerSize(rootWidth.multiply(0.25), rootHeight.multiply(1));
+            setInstrumentSelectionDimensions(calculatedWidth, calculatedHeight);
+            setPlayPauseBpmDimensions(calculatedWidth, calculatedHeight);
+        }
     }
 
     private void buildLargeLayout() {
         this.vSelection.getChildren().addAll(playPauseBpm, snareSelection, hihatSelection, kickSelection, cymbalSelection);
-        this.instrumentSelection.getChildren().addAll(vSelection);
+        this.instrumentSelection.getChildren().add(vSelection);
     }
 
 }
