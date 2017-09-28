@@ -79,11 +79,10 @@ public class Presenter {
         this.cymbal = cymbal;
         this.hiHat = hiHat;
         this.snare = snare;
-<<<<<<< HEAD
         this.noEffect = noEffect;
-=======
+
         this.highlighterPosition = 0;
->>>>>>> 6183813653c9acc3b6ae03d04ba380b732018032
+
     }
 
     @PostConstruct
