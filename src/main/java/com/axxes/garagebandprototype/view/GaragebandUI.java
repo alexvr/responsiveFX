@@ -40,11 +40,11 @@ public class GaragebandUI {
 
         // Horizontal and vertical layout.
         this.hWrapper = new HBox();
-        this.hWrapper.setStyle("-fx-background-color: #336699;");
+        this.hWrapper.setStyle("-fx-background-color: #193441;");
         this.hWrapper.setPadding(new Insets(10, 10, 10, 10));
         this.hWrapper.setSpacing(10);
         this.vWrapper = new VBox();
-        this.vWrapper.setStyle("-fx-background-color: #e53d2f;");
+        this.vWrapper.setStyle("-fx-background-color: #193441;");
         this.vWrapper.setPadding(new Insets(10, 10, 10, 10));
         this.vWrapper.setSpacing(10);
 

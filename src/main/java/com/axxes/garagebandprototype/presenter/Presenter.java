@@ -115,6 +115,10 @@ public class Presenter {
     
     public void changeHighlighterPosition(int position){
         this.highlighterPosition = position;
+        int measureCount = position / drumloop.getBeatsPerMeasure();
+        int beatCount = position % drumloop.getBeatsPerMeasure();
+        drumloop.setCurrentMeasure(measureCount);
+        drumloop.getMeasures().get(measureCount).setCurrentBeat(beatCount);
         this.beatGrid.stepHighlight(position);
     }
 

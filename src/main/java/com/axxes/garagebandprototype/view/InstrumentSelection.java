@@ -33,10 +33,10 @@ public class InstrumentSelection implements ResponsiveView {
     private ToggleButton playPause;
     private TextField bpm;
 
-    private StackPane snareSelection;
-    private StackPane hihatSelection;
-    private StackPane kickSelection;
-    private StackPane cymbalSelection;
+    private ToggleButton snareSelection;
+    private ToggleButton hihatSelection;
+    private ToggleButton kickSelection;
+    private ToggleButton cymbalSelection;
 
     public InstrumentSelection() {
         this.rootWidth = new SimpleDoubleProperty(0);
@@ -45,11 +45,11 @@ public class InstrumentSelection implements ResponsiveView {
         // Instrument selection pane
         this.instrumentSelection = new Pane();
         this.hSelection = new HBox();
-        this.hSelection.setStyle("-fx-background-color: #fffb1d;");
+        this.hSelection.setStyle("-fx-background-color: #3E606F;");
         this.hSelection.setPadding(new Insets(10, 10, 10, 10));
         this.hSelection.setSpacing(10);
         this.vSelection = new VBox();
-        this.vSelection.setStyle("-fx-background-color: #ff4033;");
+        this.vSelection.setStyle("-fx-background-color: #3E606F;");
         this.vSelection.setPadding(new Insets(10, 10, 10, 10));
         this.vSelection.setSpacing(10);
 
@@ -71,44 +71,44 @@ public class InstrumentSelection implements ResponsiveView {
         this.bpm.getStyleClass().add("bpm");
 
         // Instruments
-        this.snareSelection = new StackPane();
+        this.snareSelection = new ToggleButton();
         this.snareSelection.getStyleClass().add("anchor");
         this.snareSelection.setAlignment(Pos.CENTER);
         ImageView snareView = new ImageView();
         snareView.setImage(new Image("/images/snare.png"));
         snareView.setFitWidth(120);
         snareView.setFitHeight(120);
-        this.snareSelection.getChildren().addAll(snareView);
+        this.snareSelection.setGraphic(snareView);
         snareSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.snarePressed());
 
-        this.hihatSelection = new StackPane();
+        this.hihatSelection = new ToggleButton();
         this.hihatSelection.getStyleClass().add("anchor");
         this.hihatSelection.setAlignment(Pos.CENTER);
         ImageView hihatView = new ImageView();
         hihatView.setImage(new Image("/images/hihat.png"));
         hihatView.setFitHeight(120);
         hihatView.setFitWidth(120);
-        this.hihatSelection.getChildren().addAll(hihatView);
+        this.hihatSelection.setGraphic(hihatView);
         hihatSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.hihatPressed());
 
-        this.kickSelection = new StackPane();
+        this.kickSelection = new ToggleButton();
         this.kickSelection.getStyleClass().add("anchor");
         this.kickSelection.setAlignment(Pos.CENTER);
         ImageView kickView = new ImageView();
         kickView.setImage(new Image("/images/kick.png"));
         kickView.setFitWidth(120);
         kickView.setFitHeight(120);
-        this.kickSelection.getChildren().addAll(kickView);
+        this.kickSelection.setGraphic(kickView);
         kickSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.kickPressed());
 
-        this.cymbalSelection = new StackPane();
+        this.cymbalSelection = new ToggleButton();
         this.cymbalSelection.getStyleClass().add("anchor");
         this.cymbalSelection.setAlignment(Pos.CENTER);
         ImageView cymbalView = new ImageView();
         cymbalView.setImage(new Image("./images/cymbal.png"));
         cymbalView.setFitHeight(120);
         cymbalView.setFitWidth(120);
-        this.cymbalSelection.getChildren().add(cymbalView);
+        this.cymbalSelection.setGraphic(cymbalView);
         cymbalSelection.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> presenter.cymbalPressed());
     }
 
@@ -161,19 +161,19 @@ public class InstrumentSelection implements ResponsiveView {
 
         this.snareSelection.prefWidthProperty().bind(width);
         this.snareSelection.prefHeightProperty().bind(height);
-        this.snareSelection.setStyle("-fx-background-color: #90fff8;");
+        //this.snareSelection.setStyle("-fx-background-color: #90fff8;");
 
         this.hihatSelection.prefWidthProperty().bind(width);
         this.hihatSelection.prefHeightProperty().bind(height);
-        this.hihatSelection.setStyle("-fx-background-color: #90fff8;");
+        //this.hihatSelection.setStyle("-fx-background-color: #90fff8;");
 
         this.kickSelection.prefWidthProperty().bind(width);
         this.kickSelection.prefHeightProperty().bind(height);
-        this.kickSelection.setStyle("-fx-background-color: #90fff8;");
+        //this.kickSelection.setStyle("-fx-background-color: #90fff8;");
 
         this.cymbalSelection.prefWidthProperty().bind(width);
         this.cymbalSelection.prefHeightProperty().bind(height);
-        this.cymbalSelection.setStyle("-fx-background-color: #90fff8;");
+        //this.cymbalSelection.setStyle("-fx-background-color: #90fff8;");
     }
 
     private void setPlayPauseBpmDimensions(DoubleBinding width, DoubleBinding height) {

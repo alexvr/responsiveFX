@@ -64,7 +64,7 @@ public class BeatGrid implements ResponsiveView {
         this.rootHeight = new SimpleDoubleProperty(0);
 
         this.beatGridContainer = new Pane();
-        this.beatGridContainer.setStyle("-fx-background-color: #33c2ff;");
+        this.beatGridContainer.setStyle("-fx-background-color: #3E606F;");
         this.beatGrid = new GridPane();
         this.beatGrid.setLayoutY(30);
     }
@@ -108,7 +108,7 @@ public class BeatGrid implements ResponsiveView {
     }
 
     private void setBeatGridSize(DoubleBinding width, DoubleBinding height) {
-        this.beatGrid.setStyle("-fx-background-color: #ffca28;");
+        //this.beatGrid.setStyle("-fx-background-color: #ffca28;");
         this.beatGrid.prefWidthProperty().bind(width);
         this.beatGrid.prefHeightProperty().bind(height);
     }
@@ -128,7 +128,8 @@ public class BeatGrid implements ResponsiveView {
     private Label createLabel(String text) {
         Label label = new Label(text);
         label.setAlignment(Pos.CENTER);
-        label.setStyle("-fx-background-color: #f200ff;");
+        // label.setStyle("-fx-background-color: #f200ff;");
+        label.setStyle("-fx-text-fill: white");
 
         DoubleBinding labelWidth = this.rootWidth.subtract(20).divide(this.beats);
 
